@@ -1,0 +1,63 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white12"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:context="com.jicsoftwarestudio.ui.SearchFragment">
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/topAppBar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/white"
+        app:titleCentered="true"
+        app:title="Search" />
+<LinearLayout
+    android:layout_marginTop="-16dp"
+    android:padding="12dp"
+    android:background="@color/white"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <EditText
+        android:id="@+id/searchEditText"
+        android:layout_weight="1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/search_background"
+        android:drawablePadding="10dp"
+        android:hint="Search"
+        android:inputType="text"
+        android:padding="10dp"
+        android:textColor="@color/black"
+        android:textColorHint="@color/gray"
+        android:textSize="16sp" />
+    <ImageButton
+        android:id="@+id/icSearch"
+        android:layout_weight="0"
+        android:background="@drawable/ic_search"
+        android:layout_width="40dp"
+        android:layout_height="40dp">
+    </ImageButton>
+</LinearLayout>
+    <TextView
+        android:id="@+id/noFindMovie"
+        android:visibility="gone"
+        android:layout_gravity="center"
+        android:textSize="25sp"
+        android:text="No suitable movie found"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+    </TextView>
+    <ProgressBar
+        android:id="@+id/icLoading"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|center" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewSearch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</LinearLayout>
