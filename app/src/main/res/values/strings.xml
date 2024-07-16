@@ -2,4 +2,6 @@
     <string name="app_name">Đã đổi tên</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_detail_screen">DetailScreen</string>
+    <string name="description">Lorine Zineb Nora Talhaoui (sinh ngày 16 tháng 10 năm 1983), được biết đến nhiều hơn với nghệ danh Loreen, là một ca sĩ nhạc pop và nhà sản xuất âm nhạc người Thụy Điển gốc Maroc.[1] Loreen đã giành chiến thắng cuộc thi Eurovision Song Contest hai lần, vào năm 2012 với ca khúc "Euphoria" và vào năm 2023 với ca khúc "Tattoo".</string>
 </resources>

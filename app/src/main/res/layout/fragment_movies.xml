@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.jicsoftwarestudio.ui.homeScreen.MoviesFragment">
+    tools:context="com.mock_project.ui.homeScreen.MoviesFragment">
     <ProgressBar
         android:id="@+id/icLoading"
         android:layout_width="wrap_content"
@@ -17,8 +17,9 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
             <LinearLayout
+                android:layout_gravity="center"
                 android:orientation="vertical"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
                 <TextView
                     android:id="@+id/textPopular"
@@ -28,13 +29,15 @@
                     android:layout_height="wrap_content">
                 </TextView>
             <androidx.recyclerview.widget.RecyclerView
+                android:layout_gravity="center"
                 android:id="@+id/recyclerViewPopular"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
             </LinearLayout>
         <LinearLayout
+            android:layout_gravity="center"
             android:orientation="vertical"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content">
             <TextView
                 android:id="@+id/textTopRated"
@@ -44,13 +47,15 @@
                 android:layout_height="wrap_content">
             </TextView>
             <androidx.recyclerview.widget.RecyclerView
+                android:layout_gravity="center"
                 android:id="@+id/recyclerViewTopRated"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </LinearLayout>
         <LinearLayout
+            android:layout_gravity="center"
             android:orientation="vertical"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content">
             <TextView
                 android:id="@+id/textNowPlaying"
@@ -60,13 +65,15 @@
                 android:layout_height="wrap_content">
             </TextView>
             <androidx.recyclerview.widget.RecyclerView
+                android:layout_gravity="center"
                 android:id="@+id/recyclerViewUpComing"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </LinearLayout>
         <LinearLayout
+            android:layout_gravity="center"
             android:orientation="vertical"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content">
             <TextView
                 android:id="@+id/textUpComing"
@@ -76,6 +83,7 @@
                 android:layout_height="wrap_content">
             </TextView>
             <androidx.recyclerview.widget.RecyclerView
+                android:layout_gravity="center"
                 android:id="@+id/recyclerViewNowPlaying"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />

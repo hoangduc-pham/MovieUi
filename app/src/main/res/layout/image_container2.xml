@@ -16,8 +16,8 @@
             app:cardCornerRadius="10dp">
             <ImageView
                 android:id="@+id/imageView"
-                android:layout_width="150dp"
-                android:layout_height="210dp"
+                android:layout_width="170dp"
+                android:layout_height="230dp"
                 android:scaleType="fitXY" />
             <ImageView
                 android:id="@+id/favoriteIcon"

@@ -15,8 +15,8 @@
                 app:cardCornerRadius="10dp">
                 <ImageView
                     android:id="@+id/imageView"
-                    android:layout_width="150dp"
-                    android:layout_height="210dp"
+                    android:layout_width="130dp"
+                    android:layout_height="180dp"
                     android:scaleType="fitXY" />
                 <ImageView
                     android:id="@+id/favoriteIcon"
@@ -45,28 +45,13 @@
                 android:textColor="@color/black"
                 android:textStyle="bold">
             </TextView>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:orientation="horizontal">
-
                 <TextView
                     android:id="@+id/voteCount"
-                    android:textSize="17sp"
+                    android:textSize="13sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Tên phim">
                 </TextView>
-
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_marginLeft="3dp"
-                    android:src="@drawable/ic_baseline_visibility_24">
-                </ImageView>
-            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>
