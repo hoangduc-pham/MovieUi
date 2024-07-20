@@ -18,11 +18,11 @@ import kotlinx.coroutines.runBlocking
 
 
 class ImageAdapter(
-    private val imageUrlList: List<String>,
-    private val listId: List<Int>,
-    private val nameMovie: List<String>,
-    private val voteCount: List<String>,
-    private val overView: List<String>,
+    private var imageUrlList: List<String>,
+    private var listId: List<Int>,
+    private var nameMovie: List<String>,
+    private var voteCount: List<String>,
+    private var overView: List<String>,
     private var isGridView: Boolean,
     private val context: Context,
     private val clickListener:(Int) -> Unit
@@ -105,5 +105,13 @@ class ImageAdapter(
 
     override fun getItemCount(): Int {
         return imageUrlList.size
+    }
+    fun updateData(newImageUrlList: List<String>, newIdList: List<Int>, newNameMovieList: List<String>, newVoteCountList: List<String>, newOverView: List<String>) {
+        imageUrlList = newImageUrlList
+        listId = newIdList
+        nameMovie = newNameMovieList
+        voteCount = newVoteCountList
+        overView = newOverView
+        notifyDataSetChanged()
     }
 }

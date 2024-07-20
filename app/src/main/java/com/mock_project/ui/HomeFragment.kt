@@ -17,17 +17,17 @@ class HomeFragment : Fragment() {
     private lateinit var tabLayout: TabLayout
     private lateinit var viewPager: ViewPager2
     private lateinit var switchView: SwitchMaterial
-    private val MovieFragment = MoviesFragment()
-    private val PopularFragment = PopularFragment()
-    private val TopRatedFragment = TopRatedFragment()
-    private val NowPlayingFragment = NowPlayingFragment()
-    private val UpComingFragment = UpComingFragment()
+    private val movieFragment = MoviesFragment()
+    private val popularFragment = PopularFragment()
+    private val topRatedFragment = TopRatedFragment()
+    private val nowPlayingFragment = NowPlayingFragment()
+    private val upComingFragment = UpComingFragment()
     private val fragments: List<Fragment> = listOf(
-        MovieFragment,
-        PopularFragment,
-        TopRatedFragment,
-        NowPlayingFragment,
-        UpComingFragment,
+        movieFragment,
+        popularFragment,
+        topRatedFragment,
+        nowPlayingFragment,
+        upComingFragment,
     )
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -45,7 +45,7 @@ class HomeFragment : Fragment() {
             "Popular",
             "Top Rated",
             "Now Playing",
-            "Upcoming"
+            "Up Coming"
         )
 
         viewPager.adapter = ViewPagerAdapter(this, fragments)
@@ -57,11 +57,11 @@ class HomeFragment : Fragment() {
     private fun initSwitch(view: View) {
         switchView = view.findViewById(R.id.switchView)
         switchView.setOnCheckedChangeListener { _, isSwitch ->
-               MovieFragment.setSwitch(isSwitch)
-               PopularFragment.setSwitch(isSwitch)
-               NowPlayingFragment.setSwitch(isSwitch)
-               TopRatedFragment.setSwitch(isSwitch)
-               UpComingFragment.setSwitch(isSwitch)
+               movieFragment.setSwitch(isSwitch)
+               popularFragment.setSwitch(isSwitch)
+               nowPlayingFragment.setSwitch(isSwitch)
+               topRatedFragment.setSwitch(isSwitch)
+               upComingFragment.setSwitch(isSwitch)
         }
     }
     override fun onCreateView(

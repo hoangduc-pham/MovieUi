@@ -2,10 +2,12 @@ package com.mock_project.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.KeyEvent
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ProgressBar
@@ -17,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jicsoftwarestudio.movie_ass.R
 import com.mock_project.adapter.ImageAdapterSearch
 import com.mock_project.model.Movie
+import com.mock_project.ui.detailScreen.DetailScreen
 import com.mock_project.viewModel.SearchViewModel
 
 
@@ -49,7 +52,7 @@ class SearchFragment : Fragment() {
         icLoading = view.findViewById(R.id.icLoading)
         noFindMovie = view.findViewById(R.id.noFindMovie)
 
-        searchIcon.setOnClickListener {
+        val performSearch = {
             val query = textEdit.text.toString()
             if (query.isNotEmpty()) {
                 icLoading.visibility = View.VISIBLE
@@ -60,6 +63,21 @@ class SearchFragment : Fragment() {
                     "Please enter a search name movie",
                     Toast.LENGTH_SHORT
                 ).show()
+            }
+        }
+        searchIcon.setOnClickListener {
+            performSearch()
+        }
+
+        textEdit.setOnEditorActionListener { _, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH ||
+                actionId == EditorInfo.IME_ACTION_DONE ||
+                event?.action == KeyEvent.ACTION_DOWN &&
+                event.keyCode == KeyEvent.KEYCODE_ENTER) {
+                performSearch()
+                true
+            } else {
+                false
             }
         }
     }

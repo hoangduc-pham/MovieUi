@@ -24,6 +24,8 @@ class MovieDetailViewModel : ViewModel() {
     private val _castMovie = MutableLiveData<List<Cast>>()
     val castMovie: LiveData<List<Cast>> get() = _castMovie
 
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> get() = _isLoading
     fun fetchMovieDetail(movieId: Int) {
         viewModelScope.launch {
             try {
@@ -34,6 +36,7 @@ class MovieDetailViewModel : ViewModel() {
 
                 val castResponse = RetrofitInstance.apiCastMovie.getCastMovie(movieId)
                 _castMovie.postValue(castResponse.cast)
+                _isLoading.value = false
             } catch (e: Exception) {
                 Log.e("MovieDetailViewModel", "Error fetching movie details: ${e.message}")
             }
