@@ -11,7 +11,7 @@ import com.bumptech.glide.Glide
 import com.jicsoftwarestudio.movie_ass.R
 
 class ImageAdapterSearch(
-    private val imageUrlList: List<String>,
+    private val imageUrlList: List<String?>,
     private val nameMovie: List<String>,
     private val rate: List<Double>,
     private val idMovie: List<Int>,
@@ -35,9 +35,15 @@ class ImageAdapterSearch(
             clickListener(idMovie[position])
         }
         val imageUrl = "https://image.tmdb.org/t/p/w500" + imageUrlList[position]
-        Glide.with(holder.imageView.context)
-            .load(imageUrl)
-            .into(holder.imageView)
+        if (imageUrlList[position].isNullOrEmpty()) {
+            Glide.with(holder.imageView.context)
+                .load(R.drawable.movie_empty)
+                .into(holder.imageView)
+        } else {
+            Glide.with(holder.imageView.context)
+                .load(imageUrl)
+                .into(holder.imageView)
+        }
         val nameMovie = nameMovie[position]
         if (nameMovie.length > 25 ) {
             holder.nameMovie.text = nameMovie.substring(0, 15) + "..."

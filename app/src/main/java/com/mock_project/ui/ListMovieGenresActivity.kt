@@ -13,6 +13,7 @@ import com.google.android.material.appbar.MaterialToolbar
 import com.jicsoftwarestudio.movie_ass.R
 import com.mock_project.adapter.ImageAdapterSearch
 import com.mock_project.model.Movie
+import com.mock_project.ui.detailScreen.DetailScreen
 import com.mock_project.viewModel.MoviesByGenreViewModel
 
 class ListMovieGenresActivity : AppCompatActivity() {

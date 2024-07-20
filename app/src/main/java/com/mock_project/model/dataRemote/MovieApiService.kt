@@ -11,8 +11,8 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface MoviePopularApi {
-    @GET("movie/popular?api_key=d5b97a6fad46348136d87b78895a0c06&page=5")
-    suspend fun getPopularMovies(): MovieResponse
+    @GET("movie/popular?api_key=d5b97a6fad46348136d87b78895a0c06&page")
+    suspend fun getPopularMovies(@Query("page") page: Int): MovieResponse
 }
 interface MovieTopRateApi {
     @GET("movie/top_rated?api_key=d5b97a6fad46348136d87b78895a0c06&page=2")

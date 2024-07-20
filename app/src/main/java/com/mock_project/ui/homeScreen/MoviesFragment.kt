@@ -2,6 +2,8 @@ package com.mock_project.ui.homeScreen
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,11 +11,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.jicsoftwarestudio.movie_ass.R
 import com.mock_project.adapter.ImageAdapter
 import com.mock_project.model.Movie
 import com.mock_project.ui.CarauselLayout
-import com.mock_project.ui.DetailScreen
+import com.mock_project.ui.detailScreen.DetailScreen
 import com.mock_project.viewModel.homeViewModel.MoviesViewModel
 
 
@@ -21,6 +24,7 @@ class MoviesFragment : Fragment() {
     private lateinit var recyclerViews: List<RecyclerView>
     private lateinit var gridLayoutManagers: List<GridLayoutManager>
     private lateinit var carouselLayoutManagers: List<CarauselLayout>
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var icLoading: View
     private var isSwitch: Boolean = false
     private lateinit var listMovie: List<Movie>
@@ -40,9 +44,11 @@ class MoviesFragment : Fragment() {
         icLoading = view.findViewById(R.id.icLoading)
         initRecyclerView(view)
         observeViewModel()
+        setupSwipeRefresh()
     }
 
     private fun initRecyclerView(view: View) {
+        swipeRefreshLayout  = view.findViewById(R.id.swipeRefreshLayout)
         recyclerViews = listOf(
             view.findViewById(R.id.recyclerViewPopular),
             view.findViewById(R.id.recyclerViewTopRated),
@@ -120,6 +126,15 @@ class MoviesFragment : Fragment() {
             recyclerViews.forEach { recyclerView ->
                 setupAdapter(listMovie, recyclerView)
             }
+        }
+    }
+    private fun setupSwipeRefresh() {
+        swipeRefreshLayout.setOnRefreshListener {
+            moviesViewModel.refreshMovies()
+            observeViewModel()
+            Handler(Looper.getMainLooper()).postDelayed({
+                swipeRefreshLayout.isRefreshing = false
+            }, 1000)
         }
     }
 }

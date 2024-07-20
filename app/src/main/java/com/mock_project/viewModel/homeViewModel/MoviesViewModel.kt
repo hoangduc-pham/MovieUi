@@ -10,8 +10,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class MoviesViewModel : ViewModel() {
-    val popularMoviesApi = RetrofitInstance.apiMoviePopular
-    val topRateMoviesApi = RetrofitInstance.apiMovieTopRate
+    private val popularMoviesApi = RetrofitInstance.apiMoviePopular
+    private val topRateMoviesApi = RetrofitInstance.apiMovieTopRate
     private val upComingMoviesApi = RetrofitInstance.apiMovieUpComing
     private val nowPlayingMoviesApi = RetrofitInstance.apiMovieNowPlaying
 
@@ -21,18 +21,21 @@ class MoviesViewModel : ViewModel() {
     val nowPlayingMovies = MutableLiveData<List<Movie>>()
     private val errorMessage = MutableLiveData<String>()
 
-    init {
+    fun refreshMovies() {
         fetchPopularMovies()
         fetchTopRatedMovies()
         fetchUpcomingMovies()
         fetchNowPlayingMovies()
+    }
+    init {
+        refreshMovies()
     }
 
     private fun fetchPopularMovies() {
         viewModelScope.launch {
             try {
                 val movies = withContext(Dispatchers.IO) {
-                    popularMoviesApi.getPopularMovies().results
+                    popularMoviesApi.getPopularMovies(1).results
                 }
                 popularMovies.postValue(movies)
             } catch (e: Exception) {

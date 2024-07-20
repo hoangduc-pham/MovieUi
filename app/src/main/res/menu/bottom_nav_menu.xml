@@ -9,6 +9,6 @@
         android:title="Search" />
     <item
         android:id="@+id/nav_genres"
-        android:icon="@drawable/ic_notification"
+        android:icon="@drawable/genres"
         android:title="Genres" />
 </menu>
