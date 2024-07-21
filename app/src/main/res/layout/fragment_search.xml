@@ -5,7 +5,7 @@
     android:background="@color/white12"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    tools:context="com.mock_project.ui.SearchFragment">
+    tools:context="com.hoangpd15.smartmovie.ui.SearchFragment">
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/topAppBar"
         android:layout_width="match_parent"

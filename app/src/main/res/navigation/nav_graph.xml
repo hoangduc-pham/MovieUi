@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/nav_home">
+    <fragment
+        android:id="@+id/nav_home"
+        android:name="com.hoangpd15.smartmovie.ui.HomeFragment"
+        android:label="HomeFragment">
+            <action
+                android:id="@+id/action_homeFragment_to_detailFragment"
+                app:destination="@id/detailFragment"
+                app:popUpTo="@id/nav_home"
+                app:popUpToInclusive="true"/>
+            <argument
+                android:name="id"
+                app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_search"
+        android:name="com.hoangpd15.smartmovie.ui.SearchFragment"
+        android:label="SearchFragment" >
+        <action
+            android:id="@+id/action_nav_search_to_detailFragment"
+            app:destination="@id/detailFragment"
+            app:popUpTo="@id/nav_search"
+            app:popUpToInclusive="true"/>
+        <argument
+            android:name="id"
+            app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_genres"
+        android:name="com.hoangpd15.smartmovie.ui.GenresFragment"
+        android:label="GenresFragment" >
+        <action
+            android:id="@+id/action_nav_genres_to_listMovieGenresFragment"
+            app:destination="@id/listMovieGenresFragment"
+            app:popUpTo="@id/nav_genres"
+            app:popUpToInclusive="true">
+        <argument
+            android:name="idGenre"
+            app:argType="integer" />
+        <argument
+            android:name="nameGenres"
+            app:argType="string" />
+        </action>
+    </fragment>
+    <fragment
+        android:id="@+id/detailFragment"
+        android:name="com.hoangpd15.smartmovie.ui.detailScreen.DetailFragment"
+        android:label="DetailFragment" >
+        <argument
+            android:name="id"
+            app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/listMovieGenresFragment"
+        android:name="com.hoangpd15.smartmovie.ui.ListMovieGenresFragment"
+        android:label="ListMovieGenresFragment"
+        tools:layout="@layout/fragment_list_movie_genres">
+        <action
+            android:id="@+id/action_listMovieGenresFragment_to_detailFragment"
+            app:destination="@id/detailFragment"
+            app:popUpTo="@id/listMovieGenresFragment" />
+        <argument
+            android:name="idGenre"
+            app:argType="integer" />
+        <argument
+            android:name="nameGenres"
+            app:argType="string" />
+    </fragment>
+</navigation>
