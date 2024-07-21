@@ -27,7 +27,7 @@ class HomeFragment : Fragment() {
         popularFragment,
         topRatedFragment,
         nowPlayingFragment,
-        upComingFragment,
+        upComingFragment
     )
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

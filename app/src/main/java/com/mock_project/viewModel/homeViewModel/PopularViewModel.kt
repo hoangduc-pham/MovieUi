@@ -1,13 +1,13 @@
+package com.mock_project.viewModel.homeViewModel
+
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mock_project.model.dataRemote.RetrofitInstance
 import com.mock_project.model.Movie
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class PopularViewModel : ViewModel() {
     private val _popularMovies = MutableLiveData<List<Movie>>()
@@ -22,7 +22,7 @@ class PopularViewModel : ViewModel() {
         fetchPopularMovies(currentPage)
     }
 
-    fun fetchPopularMovies(page: Int) {
+    private fun fetchPopularMovies(page: Int) {
         viewModelScope.launch {
             loadMoviesFromApi(page)
         }
@@ -32,7 +32,7 @@ class PopularViewModel : ViewModel() {
         viewModelScope.launch {
             _isLoadMore.postValue(true)
             // Delay 2 giây trước khi thực hiện tải dữ liệu
-            delay(2000) // 2000 milliseconds = 2 seconds
+            delay(1000) // 2000 milliseconds = 2 seconds
             loadMoviesFromApi(currentPage)
         }
     }
@@ -44,7 +44,6 @@ class PopularViewModel : ViewModel() {
             _popularMovies.postValue(currentList)
             currentPage++
         } catch (e: Exception) {
-            // Handle error
             _popularMovies.postValue(emptyList())
         } finally {
             _isLoadMore.postValue(false)

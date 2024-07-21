@@ -1,6 +1,6 @@
 package com.mock_project.ui.homeScreen
 
-import PopularViewModel
+import com.mock_project.viewModel.homeViewModel.PopularViewModel
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -20,7 +20,6 @@ import com.mock_project.adapter.ImageAdapter
 import com.mock_project.model.Movie
 import com.mock_project.ui.CarauselLayout
 import com.mock_project.ui.detailScreen.DetailScreen
-
 
 class PopularFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
@@ -46,34 +45,29 @@ class PopularFragment : Fragment() {
     }
 
     private fun initRecyclerView(view: View) {
-        swipeRefreshLayout  = view.findViewById(R.id.swipeRefreshLayout)
+        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
         recyclerView = view.findViewById(R.id.recyclerViewPopular)
         progressBar = view.findViewById(R.id.progressBar)
-        recyclerView.layoutManager = GridLayoutManager(requireContext(), 2, GridLayoutManager.VERTICAL, false)
+        recyclerView.layoutManager =
+            GridLayoutManager(requireContext(), 2, GridLayoutManager.VERTICAL, false)
         recyclerView.layoutManager = CarauselLayout(requireContext(), RecyclerView.VERTICAL, false)
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                if (!recyclerView.canScrollVertically(1)) {
-                    if (popularViewModel.isLoadMore.value == false) {
-                        popularViewModel.loadMoreMovies()
-                    }
+                if (!recyclerView.canScrollVertically(1) && popularViewModel.isLoadMore.value == false) {
+                    popularViewModel.loadMoreMovies()
                 }
-            }})
+            }
+        })
     }
 
     private fun observeViewModel() {
         popularViewModel.popularMovies.observe(viewLifecycleOwner, Observer { popularMovies ->
-//            listMovie = popularMovies ?: emptyList()
-            listMovie = popularMovies.toMutableList()
+            listMovie = popularMovies ?: emptyList()
             setupAdapter(popularMovies)
         })
         popularViewModel.isLoadMore.observe(viewLifecycleOwner, Observer { isLoadMore ->
-            if (isLoadMore) {
-                progressBar.visibility = View.VISIBLE
-            } else {
-                progressBar.visibility = View.GONE
-            }
+            progressBar.visibility = if (isLoadMore) View.VISIBLE else View.GONE
         })
     }
 
@@ -86,7 +80,15 @@ class PopularFragment : Fragment() {
         if (::adapter.isInitialized) {
             adapter.updateData(imageUrlList, idList, nameMovieList, voteCountList, overView)
         } else {
-            adapter = ImageAdapter(imageUrlList, idList, nameMovieList, voteCountList, overView, isSwitch, requireContext()) { id ->
+            adapter = ImageAdapter(
+                imageUrlList,
+                idList,
+                nameMovieList,
+                voteCountList,
+                overView,
+                isSwitch,
+                requireContext()
+            ) { id ->
                 val intent = Intent(requireContext(), DetailScreen::class.java)
                 intent.putExtra("id", id)
                 startActivity(intent)
@@ -94,19 +96,28 @@ class PopularFragment : Fragment() {
             recyclerView.adapter = adapter
         }
     }
-    private fun setupAdapter2(movieList: List<Movie>) {
+
+    private fun setupAdapterSwitch(movieList: List<Movie>) {
         val imageUrlList = movieList.map { it.posterPath }
         val idList = movieList.map { it.id }
         val nameMovieList = movieList.map { it.title }
         val overView = movieList.map { it.overview }
         val voteCountList = movieList.map { it.voteCount.toString() }
-        adapter = ImageAdapter(imageUrlList, idList, nameMovieList, voteCountList, overView, isSwitch, requireContext()) { id ->
-                val intent = Intent(requireContext(), DetailScreen::class.java)
-                intent.putExtra("id", id)
-                startActivity(intent)
-            }
-            recyclerView.adapter = adapter
+        adapter = ImageAdapter(
+            imageUrlList,
+            idList,
+            nameMovieList,
+            voteCountList,
+            overView,
+            isSwitch,
+            requireContext()
+        ) { id ->
+            val intent = Intent(requireContext(), DetailScreen::class.java)
+            intent.putExtra("id", id)
+            startActivity(intent)
         }
+        recyclerView.adapter = adapter
+    }
 
     private fun updateRecyclerViewLayoutManagers() {
         recyclerView.layoutManager = if (isSwitch) {
@@ -119,13 +130,14 @@ class PopularFragment : Fragment() {
     fun setSwitch(isChecked: Boolean) {
         isSwitch = isChecked
         if (::listMovie.isInitialized && isAdded) {
-            setupAdapter2(listMovie)
+            setupAdapterSwitch(listMovie)
             updateRecyclerViewLayoutManagers()
         }
     }
+
     private fun setupSwipeRefresh() {
         swipeRefreshLayout.setOnRefreshListener {
-            popularViewModel.fetchPopularMovies(1)
+            setupAdapterSwitch(listMovie)
             observeViewModel()
             Handler(Looper.getMainLooper()).postDelayed({
                 swipeRefreshLayout.isRefreshing = false

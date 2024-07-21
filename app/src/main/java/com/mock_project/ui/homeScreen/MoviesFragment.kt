@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -25,7 +26,8 @@ class MoviesFragment : Fragment() {
     private lateinit var gridLayoutManagers: List<GridLayoutManager>
     private lateinit var carouselLayoutManagers: List<CarauselLayout>
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
-    private lateinit var icLoading: View
+    private lateinit var icLoadingIcon: View
+    private lateinit var adapter: ImageAdapter
     private var isSwitch: Boolean = false
     private lateinit var listMovie: List<Movie>
 
@@ -41,7 +43,7 @@ class MoviesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        icLoading = view.findViewById(R.id.icLoading)
+        icLoadingIcon = view.findViewById(R.id.icLoading)
         initRecyclerView(view)
         observeViewModel()
         setupSwipeRefresh()
@@ -52,8 +54,8 @@ class MoviesFragment : Fragment() {
         recyclerViews = listOf(
             view.findViewById(R.id.recyclerViewPopular),
             view.findViewById(R.id.recyclerViewTopRated),
-            view.findViewById(R.id.recyclerViewUpComing),
-            view.findViewById(R.id.recyclerViewNowPlaying)
+            view.findViewById(R.id.recyclerViewNowPlaying),
+            view.findViewById(R.id.recyclerViewUpComing)
         )
 
         gridLayoutManagers = List(recyclerViews.size) {
@@ -80,18 +82,19 @@ class MoviesFragment : Fragment() {
         val movieObservers = listOf(
             moviesViewModel.popularMovies to recyclerViews[0],
             moviesViewModel.topRatedMovies to recyclerViews[1],
-            moviesViewModel.upcomingMovies to recyclerViews[2],
-            moviesViewModel.nowPlayingMovies to recyclerViews[3]
+            moviesViewModel.nowPlayingMovies to recyclerViews[2],
+            moviesViewModel.upComingMovies to recyclerViews[3]
         )
 
         movieObservers.forEach { (movieLiveData, recyclerView) ->
             movieLiveData.observe(viewLifecycleOwner) { movies ->
                 listMovie = movies
-                icLoading.visibility = View.VISIBLE
                 setupAdapter(movies, recyclerView)
-                icLoading.visibility = View.GONE
             }
         }
+        moviesViewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading ->
+            icLoadingIcon.visibility = if (isLoading) View.VISIBLE else View.GONE
+        })
     }
 
     private fun setupAdapter(movies: List<Movie>, recyclerView: RecyclerView) {
@@ -102,26 +105,18 @@ class MoviesFragment : Fragment() {
         val overView = limitedMovies.map { it.overview }
         val voteCountList = limitedMovies.map { it.voteCount.toString() }
 
-        val adapterGrid = ImageAdapter(imageUrlList, idList, nameMovieList, voteCountList, overView,true, requireContext())
-        {
-            id -> val intent = Intent(requireContext(), DetailScreen::class.java)
+        adapter = ImageAdapter(imageUrlList, idList, nameMovieList, voteCountList, overView, isSwitch, requireContext()) { id ->
+            val intent = Intent(requireContext(), DetailScreen::class.java)
             intent.putExtra("id", id)
             startActivity(intent)
         }
-
-        val adapter = ImageAdapter(imageUrlList, idList, nameMovieList, voteCountList,overView, false, requireContext())
-        {
-            id -> val intent = Intent(requireContext(), DetailScreen::class.java)
-            intent.putExtra("id", id)
-            startActivity(intent)
-        }
-
-        recyclerView.adapter = if (isSwitch) adapterGrid else adapter
+        recyclerView.adapter = adapter
     }
 
     fun setSwitch(isChecked: Boolean) {
         isSwitch = isChecked
         if (::listMovie.isInitialized && isAdded) {
+            moviesViewModel.refreshMovies()
             updateRecyclerViewLayoutManagers()
             recyclerViews.forEach { recyclerView ->
                 setupAdapter(listMovie, recyclerView)

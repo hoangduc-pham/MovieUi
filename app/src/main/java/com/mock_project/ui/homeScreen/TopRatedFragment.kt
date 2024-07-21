@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
@@ -26,13 +27,13 @@ class TopRatedFragment : Fragment() {
     private lateinit var adapter: ImageAdapter
     private lateinit var listMovie: List<Movie>
     private var isSwitch: Boolean = false
+    private lateinit var progressBar: ProgressBar
     private val topRatedViewModel: TopRatedViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_top_rated, container, false)
     }
 
@@ -44,11 +45,20 @@ class TopRatedFragment : Fragment() {
     }
 
     private fun initRecyclerView(view: View) {
-        swipeRefreshLayout  = view.findViewById(R.id.swipeRefreshLayout)
+        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
         recyclerView = view.findViewById(R.id.recyclerTopRate)
-        recyclerView.layoutManager = GridLayoutManager(requireContext(), 2, GridLayoutManager.VERTICAL,false)
+        progressBar = view.findViewById(R.id.progressBar)
+        recyclerView.layoutManager =
+            GridLayoutManager(requireContext(), 2, GridLayoutManager.VERTICAL, false)
         recyclerView.layoutManager = CarauselLayout(requireContext(), RecyclerView.VERTICAL, false)
-        updateRecyclerViewLayoutManagers()
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (!recyclerView.canScrollVertically(1) && topRatedViewModel.isLoadMore.value == false) {
+                    topRatedViewModel.loadMoreMovies()
+                }
+            }
+        })
     }
 
     private fun observeViewModel() {
@@ -56,8 +66,10 @@ class TopRatedFragment : Fragment() {
             listMovie = topRatedMovies ?: emptyList()
             setupAdapter(topRatedMovies)
         })
+        topRatedViewModel.isLoadMore.observe(viewLifecycleOwner, Observer { isLoadMore ->
+            progressBar.visibility = if (isLoadMore) View.VISIBLE else View.GONE
+        })
     }
-
 
     private fun setupAdapter(movieList: List<Movie>) {
         val imageUrlList = movieList.map { it.posterPath }
@@ -65,25 +77,51 @@ class TopRatedFragment : Fragment() {
         val nameMovieList = movieList.map { it.title }
         val overView = movieList.map { it.overview }
         val voteCountList = movieList.map { it.voteCount.toString() }
+        if (::adapter.isInitialized) {
+            adapter.updateData(imageUrlList, idList, nameMovieList, voteCountList, overView)
+        } else {
+            adapter = ImageAdapter(
+                imageUrlList,
+                idList,
+                nameMovieList,
+                voteCountList,
+                overView,
+                isSwitch,
+                requireContext()
+            ) { id ->
+                val intent = Intent(requireContext(), DetailScreen::class.java)
+                intent.putExtra("id", id)
+                startActivity(intent)
+            }
+            recyclerView.adapter = adapter
+        }
+    }
 
-        val adapterGrid = ImageAdapter(imageUrlList, idList, nameMovieList, voteCountList, overView,true, requireContext())
-        {
-            id -> val intent = Intent(requireContext(), DetailScreen::class.java)
+    private fun setupAdapterSwitch(movieList: List<Movie>) {
+        val imageUrlList = movieList.map { it.posterPath }
+        val idList = movieList.map { it.id }
+        val nameMovieList = movieList.map { it.title }
+        val overView = movieList.map { it.overview }
+        val voteCountList = movieList.map { it.voteCount.toString() }
+        adapter = ImageAdapter(
+            imageUrlList,
+            idList,
+            nameMovieList,
+            voteCountList,
+            overView,
+            isSwitch,
+            requireContext()
+        ) { id ->
+            val intent = Intent(requireContext(), DetailScreen::class.java)
             intent.putExtra("id", id)
             startActivity(intent)
         }
-        val adapter = ImageAdapter(imageUrlList, idList, nameMovieList, voteCountList,overView, false, requireContext())
-        {
-            id -> val intent = Intent(requireContext(), DetailScreen::class.java)
-            intent.putExtra("id", id)
-            startActivity(intent)
-        }
-        recyclerView.adapter = if (isSwitch) adapterGrid else adapter
+        recyclerView.adapter = adapter
     }
 
     private fun updateRecyclerViewLayoutManagers() {
         recyclerView.layoutManager = if (isSwitch) {
-            GridLayoutManager(requireContext(), 2, GridLayoutManager.VERTICAL,false)
+            GridLayoutManager(requireContext(), 2, GridLayoutManager.VERTICAL, false)
         } else {
             CarauselLayout(requireContext(), RecyclerView.VERTICAL, false)
         }
@@ -92,17 +130,18 @@ class TopRatedFragment : Fragment() {
     fun setSwitch(isChecked: Boolean) {
         isSwitch = isChecked
         if (::listMovie.isInitialized && isAdded) {
-            setupAdapter(listMovie)
+            setupAdapterSwitch(listMovie)
             updateRecyclerViewLayoutManagers()
         }
     }
+
     private fun setupSwipeRefresh() {
         swipeRefreshLayout.setOnRefreshListener {
-            topRatedViewModel.fetchTopRatedMovies()
+            setupAdapterSwitch(listMovie)
             observeViewModel()
             Handler(Looper.getMainLooper()).postDelayed({
                 swipeRefreshLayout.isRefreshing = false
-            }, 1000)
+            }, 500)
         }
     }
 }

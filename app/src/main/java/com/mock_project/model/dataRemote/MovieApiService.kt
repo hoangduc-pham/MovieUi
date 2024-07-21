@@ -15,16 +15,16 @@ interface MoviePopularApi {
     suspend fun getPopularMovies(@Query("page") page: Int): MovieResponse
 }
 interface MovieTopRateApi {
-    @GET("movie/top_rated?api_key=d5b97a6fad46348136d87b78895a0c06&page=2")
-    suspend fun getTopRateMovies(): MovieResponse
+    @GET("movie/top_rated?api_key=d5b97a6fad46348136d87b78895a0c06&page")
+    suspend fun getTopRateMovies(@Query("page") page: Int): MovieResponse
 }
 interface MovieUpComingApi {
-    @GET("movie/upcoming?api_key=d5b97a6fad46348136d87b78895a0c06&page=3")
-    suspend fun getUpComingMovies(): MovieResponse
+    @GET("movie/upcoming?api_key=d5b97a6fad46348136d87b78895a0c06&page")
+    suspend fun getUpComingMovies(@Query("page") page: Int): MovieResponse
 }
 interface MovieNowPlayingApi {
-    @GET("movie/now_playing?api_key=d5b97a6fad46348136d87b78895a0c06&page=4")
-    suspend fun getNowPlayingMovies(): MovieResponse
+    @GET("movie/now_playing?api_key=d5b97a6fad46348136d87b78895a0c06&page")
+    suspend fun getNowPlayingMovies(@Query("page") page: Int): MovieResponse
 }
 interface MovieSearchApi {
     @GET("https://api.themoviedb.org/3/search/movie?api_key=d5b97a6fad46348136d87b78895a0c06")
