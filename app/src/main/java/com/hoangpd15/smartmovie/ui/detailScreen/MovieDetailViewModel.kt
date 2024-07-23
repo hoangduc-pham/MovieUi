@@ -1,4 +1,4 @@
-package com.hoangpd15.smartmovie.viewModel
+package com.hoangpd15.smartmovie.ui.detailScreen
 
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -28,6 +28,7 @@ class MovieDetailViewModel : ViewModel() {
     val isLoading: LiveData<Boolean> get() = _isLoading
     fun fetchMovieDetail(movieId: Int) {
         viewModelScope.launch {
+            _isLoading.postValue(true)
             try {
                 val movieDetailResponse = RetrofitInstance.apiMovieDetail.getMovieDetails(movieId)
                 _movieDetail.postValue(movieDetailResponse)
@@ -36,9 +37,10 @@ class MovieDetailViewModel : ViewModel() {
 
                 val castResponse = RetrofitInstance.apiCastMovie.getCastMovie(movieId)
                 _castMovie.postValue(castResponse.cast)
-                _isLoading.value = false
             } catch (e: Exception) {
                 Log.e("MovieDetailViewModel", "Error fetching movie details: ${e.message}")
+            } finally {
+                _isLoading.postValue(false)
             }
         }
     }

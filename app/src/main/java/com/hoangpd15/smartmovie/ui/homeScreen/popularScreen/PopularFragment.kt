@@ -1,4 +1,4 @@
-package com.hoangpd15.smartmovie.ui.homeScreen
+package com.hoangpd15.smartmovie.ui.homeScreen.popularScreen
 
 import android.os.Bundle
 import android.os.Handler
@@ -16,26 +16,26 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.hoangpd15.smartmovie.R
 import com.hoangpd15.smartmovie.adapter.ImageAdapter
+import com.hoangpd15.smartmovie.databinding.FragmentMoviesBinding
+import com.hoangpd15.smartmovie.databinding.FragmentPopularBinding
 import com.hoangpd15.smartmovie.model.Movie
 import com.hoangpd15.smartmovie.ui.CarauselLayout
-import com.hoangpd15.smartmovie.ui.HomeFragmentDirections
-import com.hoangpd15.smartmovie.ui.detailScreen.DetailFragment
-import com.hoangpd15.smartmovie.viewModel.homeViewModel.TopRatedViewModel
+import com.hoangpd15.smartmovie.ui.homeScreen.HomeFragmentDirections
 
-class TopRatedFragment : Fragment() {
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
+class PopularFragment : Fragment() {
+    private var _binding: FragmentPopularBinding? = null
+    private val binding get() = _binding!!
     private lateinit var adapter: ImageAdapter
     private lateinit var listMovie: List<Movie>
     private var isSwitch: Boolean = false
-    private lateinit var progressBar: ProgressBar
-    private val topRatedViewModel: TopRatedViewModel by viewModels()
+    private val popularViewModel: PopularViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_top_rated, container, false)
+        _binding = FragmentPopularBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -46,29 +46,29 @@ class TopRatedFragment : Fragment() {
     }
 
     private fun initRecyclerView(view: View) {
-        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
-        recyclerView = view.findViewById(R.id.recyclerTopRate)
-        progressBar = view.findViewById(R.id.progressBar)
-        recyclerView.layoutManager =
+        binding.recyclerViewPopular.layoutManager =
             GridLayoutManager(requireContext(), 2, GridLayoutManager.VERTICAL, false)
-        recyclerView.layoutManager = CarauselLayout(requireContext(), RecyclerView.VERTICAL, false)
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        binding.recyclerViewPopular.layoutManager = CarauselLayout(requireContext(), RecyclerView.VERTICAL, false)
+        binding.recyclerViewPopular.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                if (!recyclerView.canScrollVertically(1) && topRatedViewModel.isLoadMore.value == false) {
-                    topRatedViewModel.loadMoreMovies()
+                if (!recyclerView.canScrollVertically(1) && popularViewModel.isLoadMore.value == false) {
+                    popularViewModel.loadMoreMovies()
                 }
             }
         })
     }
 
     private fun observeViewModel() {
-        topRatedViewModel.topRatedMovies.observe(viewLifecycleOwner, Observer { topRatedMovies ->
-            listMovie = topRatedMovies ?: emptyList()
-            setupAdapter(topRatedMovies)
+        popularViewModel.popularMovies.observe(viewLifecycleOwner, Observer { popularMovies ->
+            listMovie = popularMovies ?: emptyList()
+            setupAdapter(popularMovies)
         })
-        topRatedViewModel.isLoadMore.observe(viewLifecycleOwner, Observer { isLoadMore ->
-            progressBar.visibility = if (isLoadMore) View.VISIBLE else View.GONE
+        popularViewModel.isLoadMore.observe(viewLifecycleOwner, Observer { isLoadMore ->
+            binding.progressBar.visibility = if (isLoadMore) View.VISIBLE else View.GONE
+        })
+        popularViewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading ->
+            binding.icLoading.visibility = if (isLoading) View.VISIBLE else View.GONE
         })
     }
 
@@ -90,13 +90,10 @@ class TopRatedFragment : Fragment() {
                 isSwitch,
                 requireContext()
             ) { id ->
-//                val fragment = DetailFragment.newInstance(id)
-//                requireActivity().supportFragmentManager.beginTransaction()
-//                    .replace(R.id.fragment_container, fragment)
-//                    .addToBackStack(null)
-//                    .commit()
+                val action = HomeFragmentDirections.actionHomeFragmentToDetailFragment(id)
+                findNavController().navigate(action)
             }
-            recyclerView.adapter = adapter
+            binding.recyclerViewPopular.adapter = adapter
         }
     }
 
@@ -118,11 +115,11 @@ class TopRatedFragment : Fragment() {
             val action = HomeFragmentDirections.actionHomeFragmentToDetailFragment(id)
             findNavController().navigate(action)
         }
-        recyclerView.adapter = adapter
+        binding.recyclerViewPopular.adapter = adapter
     }
 
     private fun updateRecyclerViewLayoutManagers() {
-        recyclerView.layoutManager = if (isSwitch) {
+        binding.recyclerViewPopular.layoutManager = if (isSwitch) {
             GridLayoutManager(requireContext(), 2, GridLayoutManager.VERTICAL, false)
         } else {
             CarauselLayout(requireContext(), RecyclerView.VERTICAL, false)
@@ -133,16 +130,17 @@ class TopRatedFragment : Fragment() {
         isSwitch = isChecked
         if (::listMovie.isInitialized && isAdded) {
             setupAdapterSwitch(listMovie)
+            popularViewModel.fetchPopularMovies(1)
             updateRecyclerViewLayoutManagers()
         }
     }
 
     private fun setupSwipeRefresh() {
-        swipeRefreshLayout.setOnRefreshListener {
+        binding.swipeRefreshLayout.setOnRefreshListener {
             setupAdapterSwitch(listMovie)
             observeViewModel()
             Handler(Looper.getMainLooper()).postDelayed({
-                swipeRefreshLayout.isRefreshing = false
+                binding.swipeRefreshLayout.isRefreshing = false
             }, 500)
         }
     }

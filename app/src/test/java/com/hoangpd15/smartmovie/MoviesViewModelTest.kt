@@ -9,7 +9,7 @@ import com.hoangpd15.smartmovie.model.dataRemote.MovieTopRateApi
 import com.hoangpd15.smartmovie.model.dataRemote.MovieUpComingApi
 import com.hoangpd15.smartmovie.model.Movie
 import com.hoangpd15.smartmovie.model.MovieResponse
-import com.hoangpd15.smartmovie.viewModel.homeViewModel.MoviesViewModel
+import com.hoangpd15.smartmovie.ui.homeScreen.movieScreen.MoviesViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.resetMain

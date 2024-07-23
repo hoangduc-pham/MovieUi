@@ -27,10 +27,10 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.hoangpd15.smartmovie.R
 import com.hoangpd15.smartmovie.ui.ui.theme.Movie_AssTheme
-import com.hoangpd15.smartmovie.viewModel.MovieDetailViewModel
 
 class DetailFragment : Fragment() {
     private val movieDetailViewModel: MovieDetailViewModel by viewModels()
@@ -43,6 +43,7 @@ class DetailFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_detail, container, false)
         val composeView = view.findViewById<ComposeView>(R.id.composeView)
         val movieId = args.id
+        val navController = findNavController()
         movieDetailViewModel.fetchMovieDetail(movieId)
         composeView.setContent {
             Movie_AssTheme {
@@ -51,7 +52,9 @@ class DetailFragment : Fragment() {
                 ) {
                     Scaffold(
                         topBar = {
-                            TopBar()
+                            TopBar(
+                                navController = navController
+                            )
                         }
                     ) { paddingValues ->
                         MovieDetailScreen(

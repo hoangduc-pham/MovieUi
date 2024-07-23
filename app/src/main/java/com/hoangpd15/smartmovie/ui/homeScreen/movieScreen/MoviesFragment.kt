@@ -1,4 +1,4 @@
-package com.hoangpd15.smartmovie.ui.homeScreen
+package com.hoangpd15.smartmovie.ui.homeScreen.movieScreen
 
 import android.os.Bundle
 import android.os.Handler
@@ -16,19 +16,21 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.hoangpd15.smartmovie.R
 import com.hoangpd15.smartmovie.adapter.ImageAdapter
+import com.hoangpd15.smartmovie.databinding.FragmentGenresBinding
+import com.hoangpd15.smartmovie.databinding.FragmentListMovieGenresBinding
+import com.hoangpd15.smartmovie.databinding.FragmentMoviesBinding
 import com.hoangpd15.smartmovie.model.Movie
 import com.hoangpd15.smartmovie.ui.CarauselLayout
-import com.hoangpd15.smartmovie.ui.HomeFragmentDirections
-import com.hoangpd15.smartmovie.viewModel.homeViewModel.MoviesViewModel
+import com.hoangpd15.smartmovie.ui.homeScreen.HomeFragmentDirections
 
 
 class MoviesFragment : Fragment() {
+    private var _binding: FragmentMoviesBinding? = null
+    private val binding get() = _binding!!
     private lateinit var recyclerViews: List<RecyclerView>
     private lateinit var gridLayoutManagers: List<GridLayoutManager>
     private lateinit var carouselLayoutManagers: List<CarauselLayout>
     private lateinit var textTitles: List<TextView>
-    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
-    private lateinit var icLoadingIcon: View
     private lateinit var adapter: ImageAdapter
     private var isSwitch: Boolean = false
     private lateinit var listMovie: List<Movie>
@@ -40,30 +42,29 @@ class MoviesFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_movies, container, false)
+        _binding = FragmentMoviesBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        icLoadingIcon = view.findViewById(R.id.icLoading)
         initRecyclerView(view)
         observeViewModel()
         setupSwipeRefresh()
     }
 
     private fun initRecyclerView(view: View) {
-        swipeRefreshLayout  = view.findViewById(R.id.swipeRefreshLayout)
         textTitles = listOf(
-            view.findViewById(R.id.textPopular),
-            view.findViewById(R.id.textTopRated),
-            view.findViewById(R.id.textNowPlaying),
-            view.findViewById(R.id.textUpComing)
+            binding.textPopular,
+            binding.textTopRated,
+            binding.textNowPlaying,
+            binding.textUpComing
         )
         recyclerViews = listOf(
-            view.findViewById(R.id.recyclerViewPopular),
-            view.findViewById(R.id.recyclerViewTopRated),
-            view.findViewById(R.id.recyclerViewNowPlaying),
-            view.findViewById(R.id.recyclerViewUpComing)
+            binding.recyclerViewPopular,
+            binding.recyclerViewTopRated,
+            binding.recyclerViewNowPlaying,
+            binding.recyclerViewUpComing
         )
 
         gridLayoutManagers = List(recyclerViews.size) {
@@ -97,7 +98,7 @@ class MoviesFragment : Fragment() {
             moviesViewModel.textPopular to textTitles[0],
             moviesViewModel.textTopRated to textTitles[1],
             moviesViewModel.textNowPlaying to textTitles[2],
-            moviesViewModel.textNowPlaying to textTitles[3]
+            moviesViewModel.textUpComing to textTitles[3]
         )
         movieObservers.forEach { (movieLiveData, recyclerView) ->
             movieLiveData.observe(viewLifecycleOwner) { movies ->
@@ -111,7 +112,7 @@ class MoviesFragment : Fragment() {
             })
         }
         moviesViewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading ->
-            icLoadingIcon.visibility = if (isLoading) View.VISIBLE else View.GONE
+            binding.icLoading.visibility = if (isLoading) View.VISIBLE else View.GONE
         })
     }
 
@@ -141,11 +142,11 @@ class MoviesFragment : Fragment() {
         }
     }
     private fun setupSwipeRefresh() {
-        swipeRefreshLayout.setOnRefreshListener {
+        binding.swipeRefreshLayout.setOnRefreshListener {
             moviesViewModel.refreshMovies()
             observeViewModel()
             Handler(Looper.getMainLooper()).postDelayed({
-                swipeRefreshLayout.isRefreshing = false
+                binding.swipeRefreshLayout.isRefreshing = false
             }, 1000)
         }
     }

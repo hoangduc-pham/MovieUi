@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.hoangpd15.smartmovie.ui.homeScreen.MoviesFragment">
+    tools:context="com.hoangpd15.smartmovie.ui.homeScreen.movieScreen.MoviesFragment">
     <ProgressBar
         android:id="@+id/icLoading"
         android:layout_width="wrap_content"

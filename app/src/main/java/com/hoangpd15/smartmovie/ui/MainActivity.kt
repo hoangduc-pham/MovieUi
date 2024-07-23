@@ -1,4 +1,4 @@
-package com.hoangpd15.smartmovie
+package com.hoangpd15.smartmovie.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -6,8 +6,6 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.hoangpd15.smartmovie.R
-import com.hoangpd15.smartmovie.ui.HomeFragment
-import com.hoangpd15.smartmovie.util.initNavigationBottom
 
 class MainActivity : AppCompatActivity() {
     private lateinit var bottomNavigation: BottomNavigationView

@@ -1,4 +1,4 @@
-package com.hoangpd15.smartmovie.ui
+package com.hoangpd15.smartmovie.ui.homeScreen
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -11,12 +11,18 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.hoangpd15.smartmovie.R
 import com.hoangpd15.smartmovie.adapter.ViewPagerAdapter
-import com.hoangpd15.smartmovie.ui.homeScreen.*
+import com.hoangpd15.smartmovie.databinding.FragmentHomeBinding
+import com.hoangpd15.smartmovie.databinding.FragmentMoviesBinding
+import com.hoangpd15.smartmovie.databinding.FragmentUpComingBinding
+import com.hoangpd15.smartmovie.ui.homeScreen.movieScreen.MoviesFragment
+import com.hoangpd15.smartmovie.ui.homeScreen.nowPlayingScreen.NowPlayingFragment
+import com.hoangpd15.smartmovie.ui.homeScreen.popularScreen.PopularFragment
+import com.hoangpd15.smartmovie.ui.homeScreen.topRatedScreen.TopRatedFragment
+import com.hoangpd15.smartmovie.ui.homeScreen.upComingScreen.UpComingFragment
 
 class HomeFragment : Fragment() {
-    private lateinit var tabLayout: TabLayout
-    private lateinit var viewPager: ViewPager2
-    private lateinit var switchView: SwitchMaterial
+    private var _binding: FragmentHomeBinding? = null
+    private val binding get() = _binding!!
     private val movieFragment = MoviesFragment()
     private val popularFragment = PopularFragment()
     private val topRatedFragment = TopRatedFragment()
@@ -37,9 +43,6 @@ class HomeFragment : Fragment() {
     }
 
     private fun initViewPagerAndTabs(view: View) {
-        tabLayout = view.findViewById(R.id.tabLayout)
-        viewPager = view.findViewById(R.id.viewPager)
-
         val titles = listOf(
             "Movies",
             "Popular",
@@ -48,15 +51,14 @@ class HomeFragment : Fragment() {
             "Up Coming"
         )
 
-        viewPager.adapter = ViewPagerAdapter(this, fragments)
+        binding.viewPager.adapter = ViewPagerAdapter(this, fragments)
 
-        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+        TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
             tab.text = titles[position]
         }.attach()
     }
     private fun initSwitch(view: View) {
-        switchView = view.findViewById(R.id.switchView)
-        switchView.setOnCheckedChangeListener { _, isSwitch ->
+        binding.switchView.setOnCheckedChangeListener { _, isSwitch ->
                movieFragment.setSwitch(isSwitch)
                popularFragment.setSwitch(isSwitch)
                nowPlayingFragment.setSwitch(isSwitch)
@@ -68,6 +70,7 @@ class HomeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_home, container, false)
+        _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        return binding.root
     }
 }

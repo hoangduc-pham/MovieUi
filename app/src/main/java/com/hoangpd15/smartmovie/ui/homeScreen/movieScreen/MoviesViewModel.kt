@@ -1,4 +1,4 @@
-package com.hoangpd15.smartmovie.viewModel.homeViewModel
+package com.hoangpd15.smartmovie.ui.homeScreen.movieScreen
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

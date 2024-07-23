@@ -1,5 +1,8 @@
 package com.hoangpd15.smartmovie.model.dataRemote
 
+import com.google.gson.FieldNamingPolicy
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.hoangpd15.smartmovie.model.CastMovieReponse
 import com.hoangpd15.smartmovie.model.GenresResponse
 import com.hoangpd15.smartmovie.model.MovieDetailResponse
@@ -50,10 +53,14 @@ interface CastMovieApi {
 object RetrofitInstance {
     private const val BASE_URL = "https://api.themoviedb.org/3/"
 
+    private val gson: Gson = GsonBuilder()
+        .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+        .create()
+
     val apiMoviePopular: MoviePopularApi by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
             .create(MoviePopularApi::class.java)
     }
@@ -61,7 +68,7 @@ object RetrofitInstance {
     val apiMovieTopRate: MovieTopRateApi by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
             .create(MovieTopRateApi::class.java)
     }
@@ -69,7 +76,7 @@ object RetrofitInstance {
     val apiMovieUpComing: MovieUpComingApi by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
             .create(MovieUpComingApi::class.java)
     }
@@ -77,42 +84,42 @@ object RetrofitInstance {
     val apiMovieNowPlaying: MovieNowPlayingApi by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
             .create(MovieNowPlayingApi::class.java)
     }
     val apiMovieSearch: MovieSearchApi by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
             .create(MovieSearchApi::class.java)
     }
     val apiListGenres: GenresListApi by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
             .create(GenresListApi::class.java)
     }
     val apiAllMovie: MovieAllApi by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
             .create(MovieAllApi::class.java)
     }
     val apiMovieDetail: MovieDetailApi by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
             .create(MovieDetailApi::class.java)
     }
     val apiCastMovie: CastMovieApi by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
             .create(CastMovieApi::class.java)
     }

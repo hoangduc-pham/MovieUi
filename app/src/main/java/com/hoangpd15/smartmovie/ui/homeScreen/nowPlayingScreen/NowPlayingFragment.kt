@@ -1,4 +1,4 @@
-package com.hoangpd15.smartmovie.ui.homeScreen
+package com.hoangpd15.smartmovie.ui.homeScreen.nowPlayingScreen
 
 import android.os.Bundle
 import android.os.Handler
@@ -16,43 +16,41 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.hoangpd15.smartmovie.R
 import com.hoangpd15.smartmovie.adapter.ImageAdapter
+import com.hoangpd15.smartmovie.databinding.FragmentMoviesBinding
+import com.hoangpd15.smartmovie.databinding.FragmentNowPlayingBinding
 import com.hoangpd15.smartmovie.model.Movie
 import com.hoangpd15.smartmovie.ui.CarauselLayout
-import com.hoangpd15.smartmovie.ui.HomeFragmentDirections
-import com.hoangpd15.smartmovie.ui.detailScreen.DetailFragment
-import com.hoangpd15.smartmovie.viewModel.homeViewModel.NowPlayingViewModel
+import com.hoangpd15.smartmovie.ui.homeScreen.HomeFragmentDirections
 
 class NowPlayingFragment : Fragment() {
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
+    private var _binding: FragmentNowPlayingBinding? = null
+    private val binding get() = _binding!!
     private lateinit var adapter: ImageAdapter
     private lateinit var listMovie: List<Movie>
     private var isSwitch: Boolean = false
-    private lateinit var progressBar: ProgressBar
     private val nowPlayingViewModel: NowPlayingViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_now_playing, container, false)
+        _binding = FragmentNowPlayingBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        nowPlayingViewModel.fetchNowPlayingMovies(1)
         initRecyclerView(view)
         observeViewModel()
         setupSwipeRefresh()
     }
 
     private fun initRecyclerView(view: View) {
-        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
-        recyclerView = view.findViewById(R.id.recyclerNowPlaying)
-        progressBar = view.findViewById(R.id.progressBar)
-        recyclerView.layoutManager =
+        binding.recyclerNowPlaying.layoutManager =
             GridLayoutManager(requireContext(), 2, GridLayoutManager.VERTICAL, false)
-        recyclerView.layoutManager = CarauselLayout(requireContext(), RecyclerView.VERTICAL, false)
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        binding.recyclerNowPlaying.layoutManager = CarauselLayout(requireContext(), RecyclerView.VERTICAL, false)
+        binding.recyclerNowPlaying.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (!recyclerView.canScrollVertically(1) && nowPlayingViewModel.isLoadMore.value == false) {
@@ -70,7 +68,10 @@ class NowPlayingFragment : Fragment() {
                 setupAdapter(nowPlayingMovies)
             })
         nowPlayingViewModel.isLoadMore.observe(viewLifecycleOwner, Observer { isLoadMore ->
-            progressBar.visibility = if (isLoadMore) View.VISIBLE else View.GONE
+            binding.progressBar.visibility = if (isLoadMore) View.VISIBLE else View.GONE
+        })
+        nowPlayingViewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading ->
+            binding.icLoading.visibility = if (isLoading) View.VISIBLE else View.GONE
         })
     }
 
@@ -92,13 +93,10 @@ class NowPlayingFragment : Fragment() {
                 isSwitch,
                 requireContext()
             ) { id ->
-//                val fragment = DetailFragment.newInstance(id)
-//                requireActivity().supportFragmentManager.beginTransaction()
-//                    .replace(R.id.fragment_container, fragment)
-//                    .addToBackStack(null)
-//                    .commit()
+                val action = HomeFragmentDirections.actionHomeFragmentToDetailFragment(id)
+                findNavController().navigate(action)
             }
-            recyclerView.adapter = adapter
+            binding.recyclerNowPlaying.adapter = adapter
         }
     }
 
@@ -120,11 +118,11 @@ class NowPlayingFragment : Fragment() {
             val action = HomeFragmentDirections.actionHomeFragmentToDetailFragment(id)
             findNavController().navigate(action)
         }
-        recyclerView.adapter = adapter
+        binding.recyclerNowPlaying.adapter = adapter
     }
 
     private fun updateRecyclerViewLayoutManagers() {
-        recyclerView.layoutManager = if (isSwitch) {
+        binding.recyclerNowPlaying.layoutManager = if (isSwitch) {
             GridLayoutManager(requireContext(), 2, GridLayoutManager.VERTICAL, false)
         } else {
             CarauselLayout(requireContext(), RecyclerView.VERTICAL, false)
@@ -140,11 +138,11 @@ class NowPlayingFragment : Fragment() {
     }
 
     private fun setupSwipeRefresh() {
-        swipeRefreshLayout.setOnRefreshListener {
+        binding.swipeRefreshLayout.setOnRefreshListener {
             setupAdapterSwitch(listMovie)
             observeViewModel()
             Handler(Looper.getMainLooper()).postDelayed({
-                swipeRefreshLayout.isRefreshing = false
+                binding.swipeRefreshLayout.isRefreshing = false
             }, 500)
         }
     }

@@ -8,7 +8,5 @@ data class CastMovieReponse (
 
 data class Cast (
     val name: String,
-
-    @SerializedName("profile_path")
     val profilePath: String?
 )

@@ -1,6 +1,7 @@
 package com.hoangpd15.smartmovie.adapter
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +13,7 @@ import com.bumptech.glide.Glide
 import com.hoangpd15.smartmovie.R
 import com.hoangpd15.smartmovie.model.dataLocal.AppDatabase
 import com.hoangpd15.smartmovie.model.FavoriteMovie
-import com.hoangpd15.smartmovie.MainActivity
+import com.hoangpd15.smartmovie.ui.MainActivity
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
@@ -45,6 +46,7 @@ class ImageAdapter(
     }
 
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
+        Log.e("MovieDetailViewModel", "Error fetching movie details")
         val idMovie = listId[position]
         holder.itemView.setOnClickListener {
             clickListener(idMovie)

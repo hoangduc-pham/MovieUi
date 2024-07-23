@@ -5,7 +5,7 @@
     android:background="@color/white12"
     android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.hoangpd15.smartmovie.ui.GenresFragment">
+    tools:context="com.hoangpd15.smartmovie.ui.genresScreen.GenresFragment">
     <com.google.android.material.appbar.MaterialToolbar
         app:layout_constraintTop_toTopOf="parent"
         android:id="@+id/topAppBar"
@@ -13,7 +13,14 @@
         android:layout_height="?attr/actionBarSize"
         android:background="@color/white"
         app:titleCentered="true"
+        app:navigationIcon="@drawable/baseline_arrow_back_24"
         app:title="Genres" />
+    <ProgressBar
+        android:id="@+id/icLoading"
+        android:visibility="visible"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center" />
     <androidx.recyclerview.widget.RecyclerView
         android:layout_gravity="center"
         android:id="@+id/recyclerListGenres"

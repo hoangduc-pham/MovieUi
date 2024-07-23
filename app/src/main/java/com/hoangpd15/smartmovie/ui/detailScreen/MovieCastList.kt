@@ -33,7 +33,6 @@ import androidx.compose.ui.unit.sp
 import com.hoangpd15.smartmovie.R
 import com.hoangpd15.smartmovie.model.Cast
 import com.hoangpd15.smartmovie.util.extension.MyImageComponent
-import com.hoangpd15.smartmovie.viewModel.MovieDetailViewModel
 
 @Composable
 fun MovieCastListSectionView(movieDetailViewModel: MovieDetailViewModel) {

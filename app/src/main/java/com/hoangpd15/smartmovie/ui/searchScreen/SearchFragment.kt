@@ -1,4 +1,4 @@
-package com.hoangpd15.smartmovie.ui
+package com.hoangpd15.smartmovie.ui.searchScreen
 
 import android.os.Bundle
 import android.view.KeyEvent
@@ -18,24 +18,24 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.hoangpd15.smartmovie.R
 import com.hoangpd15.smartmovie.adapter.ImageAdapterSearch
+import com.hoangpd15.smartmovie.adapter.ListGenresAdapter
+import com.hoangpd15.smartmovie.databinding.FragmentSearchBinding
 import com.hoangpd15.smartmovie.model.Movie
-import com.hoangpd15.smartmovie.viewModel.SearchViewModel
+import com.hoangpd15.smartmovie.ui.CarauselLayout
 
 
 class SearchFragment : Fragment() {
-    private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: ImageAdapterSearch
-    private lateinit var searchIcon: ImageButton
-    private lateinit var icLoading: ProgressBar
-    private lateinit var noFindMovie: TextView
-    private lateinit var textEdit: EditText
+    private var _binding: FragmentSearchBinding? = null
+    private val binding get() = _binding!!
 
     private val searchViewModel: SearchViewModel by viewModels()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_search, container, false)
+        _binding = FragmentSearchBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -46,15 +46,9 @@ class SearchFragment : Fragment() {
     }
 
     private fun clickSearch(view: View) {
-        searchIcon = view.findViewById(R.id.icSearch)
-        textEdit = view.findViewById(R.id.searchEditText)
-        icLoading = view.findViewById(R.id.icLoading)
-        noFindMovie = view.findViewById(R.id.noFindMovie)
-
         val performSearch = {
-            val query = textEdit.text.toString()
+            val query = binding.searchEditText.text.toString()
             if (query.isNotEmpty()) {
-                icLoading.visibility = View.VISIBLE
                 searchViewModel.searchMovies(query)
             } else {
                 Toast.makeText(
@@ -64,11 +58,11 @@ class SearchFragment : Fragment() {
                 ).show()
             }
         }
-        searchIcon.setOnClickListener {
+        binding.icSearch.setOnClickListener {
             performSearch()
         }
 
-        textEdit.setOnEditorActionListener { _, actionId, event ->
+        binding.searchEditText.setOnEditorActionListener { _, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH ||
                 actionId == EditorInfo.IME_ACTION_DONE ||
                 event?.action == KeyEvent.ACTION_DOWN &&
@@ -83,15 +77,18 @@ class SearchFragment : Fragment() {
     }
 
     private fun initRecyclerView(view: View) {
-        recyclerView = view.findViewById(R.id.recyclerViewSearch)
-        recyclerView.layoutManager = CarauselLayout(requireContext(), RecyclerView.VERTICAL, false)
+        binding.recyclerViewSearch.layoutManager = CarauselLayout(requireContext(), RecyclerView.VERTICAL, false)
     }
 
     private fun observeViewModel() {
         searchViewModel.searchMovies.observe(viewLifecycleOwner, Observer { searchMovies ->
-            icLoading.visibility = View.GONE
-            noFindMovie.visibility = if (searchMovies.isNullOrEmpty()) View.VISIBLE else View.GONE
             setupAdapter(searchMovies)
+        })
+        searchViewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading ->
+            binding.icLoading.visibility = if (isLoading) View.VISIBLE else View.GONE
+        })
+        searchViewModel.noFindMovie.observe(viewLifecycleOwner, Observer { noFindMovie ->
+            binding.noFindMovie.visibility = if (noFindMovie) View.VISIBLE else View.GONE
         })
     }
 
@@ -106,6 +103,6 @@ class SearchFragment : Fragment() {
             val action = SearchFragmentDirections.actionNavSearchToDetailFragment(id)
             findNavController().navigate(action)
         }
-        recyclerView.adapter = adapter
+        binding.recyclerViewSearch.adapter = adapter
     }
 }

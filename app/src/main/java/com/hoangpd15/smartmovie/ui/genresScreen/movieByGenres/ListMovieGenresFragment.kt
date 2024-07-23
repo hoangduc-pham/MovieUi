@@ -1,4 +1,4 @@
-package com.hoangpd15.smartmovie.ui
+package com.hoangpd15.smartmovie.ui.genresScreen.movieByGenres
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -15,16 +15,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
 import com.hoangpd15.smartmovie.R
 import com.hoangpd15.smartmovie.adapter.ImageAdapterSearch
+import com.hoangpd15.smartmovie.databinding.FragmentGenresBinding
+import com.hoangpd15.smartmovie.databinding.FragmentListMovieGenresBinding
+import com.hoangpd15.smartmovie.databinding.FragmentSearchBinding
 import com.hoangpd15.smartmovie.model.Movie
-import com.hoangpd15.smartmovie.ui.detailScreen.DetailFragmentArgs
-import com.hoangpd15.smartmovie.viewModel.MoviesByGenreViewModel
+import com.hoangpd15.smartmovie.ui.CarauselLayout
 
 class ListMovieGenresFragment : Fragment() {
-    private lateinit var recyclerView: RecyclerView
+    private var _binding: FragmentListMovieGenresBinding? = null
+    private val binding get() = _binding!!
     private lateinit var adapter: ImageAdapterSearch
-    private lateinit var icLoading: ProgressBar
-    private lateinit var icLoadError: TextView
-    private lateinit var topAppBar: MaterialToolbar
     private val movieByGenresViewModel: MoviesByGenreViewModel by viewModels()
     private val args: ListMovieGenresFragmentArgs by navArgs()
 
@@ -32,7 +32,8 @@ class ListMovieGenresFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_list_movie_genres, container, false)
+        _binding = FragmentListMovieGenresBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -41,22 +42,19 @@ class ListMovieGenresFragment : Fragment() {
         observeViewModel()
     }
     private fun initRecyclerView(view: View) {
-        icLoading = view.findViewById(R.id.icLoading)
-        topAppBar = view.findViewById(R.id.topAppBar)
-        icLoading.visibility = View.VISIBLE
-
         val genreId = args.idGenre
         movieByGenresViewModel.fetchMoviesByGenre(genreId)
 
         val genreName = args.nameGenres
-        topAppBar.title = genreName
-
-        recyclerView = view.findViewById(R.id.recyclerViewGenresMovie)
-        recyclerView.layoutManager = CarauselLayout(requireContext(), RecyclerView.VERTICAL, false)
+        binding.topAppBar.title = genreName
+        binding.topAppBar.setNavigationOnClickListener {
+            findNavController().popBackStack()
+        }
+        binding.recyclerViewGenresMovie.layoutManager = CarauselLayout(requireContext(), RecyclerView.VERTICAL, false)
     }
     private fun observeViewModel() {
         movieByGenresViewModel.moviesByGenre.observe(viewLifecycleOwner, Observer { movies  ->
-            icLoading.visibility = View.GONE
+            binding.icLoading.visibility = View.GONE
             setupAdapter(movies)
         })
     }
@@ -73,6 +71,6 @@ class ListMovieGenresFragment : Fragment() {
             val action = ListMovieGenresFragmentDirections.actionListMovieGenresFragmentToDetailFragment(id)
             findNavController().navigate(action)
         }
-        recyclerView.adapter = adapter
+        binding.recyclerViewGenresMovie.adapter = adapter
     }
 }
