@@ -11,11 +11,11 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.hoangpd15.smartmovie.adapter.ImageAdapter
 import com.hoangpd15.smartmovie.databinding.FragmentUpComingBinding
 import com.hoangpd15.smartmovie.model.Movie
-import com.hoangpd15.smartmovie.ui.CarauselLayout
 import com.hoangpd15.smartmovie.ui.UiState
 import com.hoangpd15.smartmovie.ui.homeScreen.HomeFragmentDirections
 
@@ -38,15 +38,17 @@ class UpComingFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         upComingViewModel.fetchMovies(1)
-        initRecyclerView(view)
+        initRecyclerView()
         observeViewModel()
         setupSwipeRefresh()
     }
 
-    private fun initRecyclerView(view: View) {
-        binding.recyclerUpComing.layoutManager =
+    private fun initRecyclerView() {
+        binding.recyclerUpComing.layoutManager = if (isSwitch) {
             GridLayoutManager(requireContext(), 2, GridLayoutManager.VERTICAL, false)
-        binding.recyclerUpComing.layoutManager = CarauselLayout(requireContext(), RecyclerView.VERTICAL, false)
+        } else {
+            LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+        }
         binding.recyclerUpComing.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
@@ -136,15 +138,15 @@ class UpComingFragment : Fragment() {
         binding.recyclerUpComing.layoutManager = if (isSwitch) {
             GridLayoutManager(requireContext(), 2, GridLayoutManager.VERTICAL, false)
         } else {
-            CarauselLayout(requireContext(), RecyclerView.VERTICAL, false)
+            LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
         }
     }
 
     fun setSwitch(isChecked: Boolean) {
         isSwitch = isChecked
         if (isAdded) {
-            upComingViewModel.fetchMovies(1)
             setupAdapterSwitch(listMovie)
+            observeViewModel()
             updateRecyclerViewLayoutManagers()
         }
     }

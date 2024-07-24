@@ -9,6 +9,7 @@ import android.widget.ProgressBar
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
 import com.hoangpd15.smartmovie.R
@@ -16,7 +17,6 @@ import com.hoangpd15.smartmovie.adapter.ListGenresAdapter
 import com.hoangpd15.smartmovie.databinding.FragmentGenresBinding
 import com.hoangpd15.smartmovie.databinding.FragmentSearchBinding
 import com.hoangpd15.smartmovie.model.Genres
-import com.hoangpd15.smartmovie.ui.CarauselLayout
 import com.hoangpd15.smartmovie.ui.UiState
 
 class GenresFragment : Fragment() {
@@ -36,11 +36,11 @@ class GenresFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initRecyclerView(view)
+        initRecyclerView()
         observeViewModel()
     }
-    private fun initRecyclerView(view: View) {
-        binding.recyclerListGenres.layoutManager = CarauselLayout(requireContext(), RecyclerView.VERTICAL, false)
+    private fun initRecyclerView() {
+        binding.recyclerListGenres.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
         binding.topAppBar.setNavigationOnClickListener {
             findNavController().popBackStack()
         }

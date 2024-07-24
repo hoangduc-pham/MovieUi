@@ -15,13 +15,13 @@ import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.hoangpd15.smartmovie.R
 import com.hoangpd15.smartmovie.adapter.ImageAdapterSearch
 import com.hoangpd15.smartmovie.adapter.ListGenresAdapter
 import com.hoangpd15.smartmovie.databinding.FragmentSearchBinding
 import com.hoangpd15.smartmovie.model.Movie
-import com.hoangpd15.smartmovie.ui.CarauselLayout
 
 
 class SearchFragment : Fragment() {
@@ -41,7 +41,7 @@ class SearchFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         clickSearch(view)
-        initRecyclerView(view)
+        initRecyclerView()
         observeViewModel()
     }
 
@@ -76,8 +76,8 @@ class SearchFragment : Fragment() {
         }
     }
 
-    private fun initRecyclerView(view: View) {
-        binding.recyclerViewSearch.layoutManager = CarauselLayout(requireContext(), RecyclerView.VERTICAL, false)
+    private fun initRecyclerView() {
+        binding.recyclerViewSearch.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
     }
 
     private fun observeViewModel() {

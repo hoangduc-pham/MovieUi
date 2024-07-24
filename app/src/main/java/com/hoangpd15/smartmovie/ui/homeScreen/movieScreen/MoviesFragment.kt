@@ -12,6 +12,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.hoangpd15.smartmovie.R
@@ -20,8 +21,8 @@ import com.hoangpd15.smartmovie.databinding.FragmentGenresBinding
 import com.hoangpd15.smartmovie.databinding.FragmentListMovieGenresBinding
 import com.hoangpd15.smartmovie.databinding.FragmentMoviesBinding
 import com.hoangpd15.smartmovie.model.Movie
-import com.hoangpd15.smartmovie.ui.CarauselLayout
 import com.hoangpd15.smartmovie.ui.UiState
+import com.hoangpd15.smartmovie.ui.UiStateAllMovie
 import com.hoangpd15.smartmovie.ui.homeScreen.HomeFragmentDirections
 
 
@@ -30,11 +31,11 @@ class MoviesFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var recyclerViews: List<RecyclerView>
     private lateinit var gridLayoutManagers: List<GridLayoutManager>
-    private lateinit var carouselLayoutManagers: List<CarauselLayout>
+    private lateinit var linearLayoutManagers: List<LinearLayoutManager>
     private lateinit var textTitles: List<TextView>
     private lateinit var adapter: ImageAdapter
     private var isSwitch: Boolean = false
-    private lateinit var listMovie: List<Movie>
+    private var listMovie: List<Movie> = emptyList()
 
     private val moviesViewModel: MoviesViewModel by viewModels()
 
@@ -49,12 +50,12 @@ class MoviesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initRecyclerView(view)
+        initRecyclerViewLayoutManagers()
         observeViewModel()
         setupSwipeRefresh()
     }
 
-    private fun initRecyclerView(view: View) {
+    private fun initRecyclerViewLayoutManagers() {
         textTitles = listOf(
             binding.textPopular,
             binding.textTopRated,
@@ -72,45 +73,54 @@ class MoviesFragment : Fragment() {
             GridLayoutManager(requireContext(), 2, GridLayoutManager.VERTICAL, false)
         }
 
-        carouselLayoutManagers = List(recyclerViews.size) {
-            CarauselLayout(requireContext(), RecyclerView.VERTICAL, false)
+        linearLayoutManagers = List(recyclerViews.size) {
+            LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
         }
-        updateRecyclerViewLayoutManagers()
-    }
-
-    private fun updateRecyclerViewLayoutManagers() {
         recyclerViews.forEachIndexed { index, recyclerView ->
             recyclerView.layoutManager = if (isSwitch) {
                 gridLayoutManagers[index]
             } else {
-                carouselLayoutManagers[index]
+                linearLayoutManagers[index]
             }
         }
     }
-
     private fun observeViewModel() {
-        moviesViewModel.uiState.observe(viewLifecycleOwner, Observer { uiState ->
-            when (uiState) {
-                is UiState.Loading -> {
-                    binding.icLoading.visibility = View.VISIBLE
-                }
-
-                is UiState.Success<*> -> {
-                    binding.icLoading.visibility = View.GONE
-                    listMovie = uiState.list as List<Movie>
-                    recyclerViews.forEach { recyclerView ->
-                        setupAdapter(listMovie, recyclerView)
-                    }
-                }
-
-                is UiState.Error -> {
-                    binding.icLoading.visibility = View.GONE
-                }
-
-                is UiState.LoadMore -> TODO()
-            }
+        moviesViewModel.uiStatePopular.observe(viewLifecycleOwner, Observer { uiState ->
+            handleUiState(uiState, binding.recyclerViewPopular, binding.icLoading)
         })
-        val titleObservers = listOf(
+
+        moviesViewModel.uiStateTopRated.observe(viewLifecycleOwner, Observer { uiState ->
+            handleUiState(uiState, binding.recyclerViewTopRated, binding.icLoading)
+        })
+
+        moviesViewModel.uiStateNowPlaying.observe(viewLifecycleOwner, Observer { uiState ->
+            handleUiState(uiState, binding.recyclerViewNowPlaying, binding.icLoading)
+        })
+
+        moviesViewModel.uiStateUpComing.observe(viewLifecycleOwner, Observer { uiState ->
+            handleUiState(uiState, binding.recyclerViewUpComing, binding.icLoading)
+        })
+    }
+    private fun handleUiState(uiState: UiStateAllMovie, recyclerView: RecyclerView, loadingIndicator: View) {
+        when (uiState) {
+            is UiStateAllMovie.Loading -> {
+                loadingIndicator.visibility = View.VISIBLE
+                recyclerView.visibility = View.GONE
+            }
+            is UiStateAllMovie.Success -> {
+                loadingIndicator.visibility = View.GONE
+                recyclerView.visibility = View.VISIBLE
+                setupAdapter(uiState.list, recyclerView)
+            }
+            is UiStateAllMovie.Error -> {
+                loadingIndicator.visibility = View.GONE
+                recyclerView.visibility = View.GONE
+                // Handle the error
+                // Toast.makeText(context, uiState.message, Toast.LENGTH_SHORT).show()
+            }
+        }
+
+    val titleObservers = listOf(
             moviesViewModel.textPopular to textTitles[0],
             moviesViewModel.textTopRated to textTitles[1],
             moviesViewModel.textNowPlaying to textTitles[2],
@@ -148,12 +158,13 @@ class MoviesFragment : Fragment() {
 
     fun setSwitch(isChecked: Boolean) {
         isSwitch = isChecked
-        if (::listMovie.isInitialized && isAdded) {
+        if (isAdded) {
             moviesViewModel.refreshMovies()
-            updateRecyclerViewLayoutManagers()
-            recyclerViews.forEach { recyclerView ->
-                setupAdapter(listMovie, recyclerView)
-            }
+            observeViewModel()
+            initRecyclerViewLayoutManagers()
+//            recyclerViews.forEach { recyclerView ->
+//                setupAdapter(listMovie, recyclerView)
+//            }
         }
     }
 

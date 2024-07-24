@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.hoangpd15.smartmovie.model.Movie
 import com.hoangpd15.smartmovie.model.dataRemote.RetrofitInstance
 import com.hoangpd15.smartmovie.ui.UiState
+import com.hoangpd15.smartmovie.ui.UiStateAllMovie
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -39,8 +40,18 @@ class MoviesViewModel : ViewModel() {
     private val _textUpComing = MutableLiveData<Boolean>()
     val textUpComing: LiveData<Boolean> get() = _textUpComing
 
-    private val _uiState = MutableLiveData<UiState>()
-    val uiState: LiveData<UiState> get() = _uiState
+    private val _uiStatePopular = MutableLiveData<UiStateAllMovie>()
+    val uiStatePopular: LiveData<UiStateAllMovie> get() = _uiStatePopular
+
+    private val _uiStateTopRated = MutableLiveData<UiStateAllMovie>()
+    val uiStateTopRated: LiveData<UiStateAllMovie> get() = _uiStateTopRated
+
+    private val _uiStateNowPlaying = MutableLiveData<UiStateAllMovie>()
+    val uiStateNowPlaying: LiveData<UiStateAllMovie> get() = _uiStateNowPlaying
+
+    private val _uiStateUpComing = MutableLiveData<UiStateAllMovie>()
+    val uiStateUpComing: LiveData<UiStateAllMovie> get() = _uiStateUpComing
+
 
     fun refreshMovies() {
         fetchPopularMovies()
@@ -56,12 +67,12 @@ class MoviesViewModel : ViewModel() {
     private fun fetchPopularMovies() {
         viewModelScope.launch {
             _textPopular.postValue(false)
-            _uiState.value = UiState.Loading
+            _uiStatePopular.value = UiStateAllMovie.Loading
             try {
                 val movies = popularMoviesApi.getPopularMovies(1).results
-                _uiState.value = UiState.Success(movies)
+                _uiStatePopular.value = UiStateAllMovie.Success(movies, UiStateAllMovie.MovieType.POPULAR)
             } catch (e: Exception) {
-                _uiState.value = UiState.Error(e.message ?: "Unknown error")
+                _uiStatePopular.value = UiStateAllMovie.Error(e.message ?: "Unknown error")
             } finally {
                 _textPopular.postValue(true)
             }
@@ -71,12 +82,12 @@ class MoviesViewModel : ViewModel() {
     private fun fetchTopRatedMovies() {
         viewModelScope.launch {
             _textTopRated.postValue(false)
-            _uiState.value = UiState.Loading
+            _uiStateTopRated.value = UiStateAllMovie.Loading
             try {
                 val movies = topRateMoviesApi.getTopRateMovies(1).results
-                _uiState.value = UiState.Success(movies)
+                _uiStateTopRated.value = UiStateAllMovie.Success(movies, UiStateAllMovie.MovieType.TOP_RATED)
             } catch (e: Exception) {
-                _uiState.value = UiState.Error(e.message ?: "Unknown error")
+                _uiStateTopRated.value = UiStateAllMovie.Error(e.message ?: "Unknown error")
             } finally {
                 _textTopRated.postValue(true)
             }
@@ -86,14 +97,12 @@ class MoviesViewModel : ViewModel() {
     private fun fetchUpComingMovies() {
         viewModelScope.launch {
             _textUpComing.postValue(false)
-            _uiState.value = UiState.Loading
+            _uiStateUpComing.value = UiStateAllMovie.Loading
             try {
-                val movies = withContext(Dispatchers.IO) {
-                    upComingMoviesApi.getUpComingMovies(1).results
-                }
-                _uiState.value = UiState.Success(movies)
+                val movies = upComingMoviesApi.getUpComingMovies(1).results
+                _uiStateUpComing.value = UiStateAllMovie.Success(movies, UiStateAllMovie.MovieType.UPCOMING)
             } catch (e: Exception) {
-                _uiState.value = UiState.Error(e.message ?: "Unknown error")
+                _uiStateUpComing.value = UiStateAllMovie.Error(e.message ?: "Unknown error")
             } finally {
                 _textUpComing.postValue(true)
             }
@@ -103,14 +112,13 @@ class MoviesViewModel : ViewModel() {
     private fun fetchNowPlayingMovies() {
         viewModelScope.launch {
             _textNowPlaying.postValue(false)
-            _uiState.value = UiState.Loading
+            _uiStateNowPlaying.value = UiStateAllMovie.Loading
             try {
-                val movies = withContext(Dispatchers.IO) {
+                val movies =
                     nowPlayingMoviesApi.getNowPlayingMovies(1).results
-                }
-                _uiState.value = UiState.Success(movies)
+                _uiStateNowPlaying.value = UiStateAllMovie.Success(movies, UiStateAllMovie.MovieType.NOW_PLAYING)
             } catch (e: Exception) {
-                _uiState.value = UiState.Error(e.message ?: "Unknown error")
+                _uiStateNowPlaying.value = UiStateAllMovie.Error(e.message ?: "Unknown error")
             } finally {
                 _textNowPlaying.postValue(true)
             }
