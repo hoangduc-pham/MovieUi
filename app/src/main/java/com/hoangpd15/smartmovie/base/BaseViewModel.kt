@@ -1,10 +1,9 @@
-package com.hoangpd15.smartmovie.ui.homeScreen.popularScreen
+package com.hoangpd15.smartmovie.base
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hoangpd15.smartmovie.model.dataRemote.RetrofitInstance
 import com.hoangpd15.smartmovie.model.Movie
 import com.hoangpd15.smartmovie.ui.UiState
 import kotlinx.coroutines.Dispatchers
@@ -12,7 +11,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class PopularViewModel : ViewModel() {
+abstract class BaseViewModel : ViewModel() {
 
     private val _uiState = MutableLiveData<UiState>()
     val uiState: LiveData<UiState> get() = _uiState
@@ -20,11 +19,7 @@ class PopularViewModel : ViewModel() {
     private var currentPage = 1
     private var currentMovies: List<Movie> = emptyList()
 
-    init {
-        fetchPopularMovies(currentPage)
-    }
-
-    fun fetchPopularMovies(page: Int) {
+    fun fetchMovies(page: Int) {
         viewModelScope.launch {
             _uiState.value = UiState.Loading
             loadMoviesFromApi(page)
@@ -38,16 +33,19 @@ class PopularViewModel : ViewModel() {
             loadMoviesFromApi(currentPage)
         }
     }
+
     private suspend fun loadMoviesFromApi(page: Int) {
         try {
-            val popularMovies = withContext(Dispatchers.IO) {
-                RetrofitInstance.apiMoviePopular.getPopularMovies(page).results
+            val movies = withContext(Dispatchers.IO) {
+                fetchMoviesFromApi(page)
             }
-            currentMovies = (currentMovies + popularMovies).distinct()
-            _uiState.value =  UiState.Success(currentMovies)
+            currentMovies = (currentMovies + movies).distinct()
+            _uiState.value = UiState.Success(currentMovies)
             currentPage++
         } catch (e: Exception) {
             _uiState.value = UiState.Error(e.message ?: "Unknown error")
         }
     }
+
+    abstract suspend fun fetchMoviesFromApi(page: Int): List<Movie>
 }

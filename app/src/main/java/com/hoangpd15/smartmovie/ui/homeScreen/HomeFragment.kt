@@ -5,20 +5,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.viewpager2.widget.ViewPager2
-import com.google.android.material.switchmaterial.SwitchMaterial
-import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import com.hoangpd15.smartmovie.R
 import com.hoangpd15.smartmovie.adapter.ViewPagerAdapter
 import com.hoangpd15.smartmovie.databinding.FragmentHomeBinding
-import com.hoangpd15.smartmovie.databinding.FragmentMoviesBinding
-import com.hoangpd15.smartmovie.databinding.FragmentUpComingBinding
+import com.hoangpd15.smartmovie.ui.homeScreen.allMovieScreen.NowPlayingFragment
+import com.hoangpd15.smartmovie.ui.homeScreen.allMovieScreen.PopularFragment
+import com.hoangpd15.smartmovie.ui.homeScreen.allMovieScreen.TopRatedFragment
+import com.hoangpd15.smartmovie.ui.homeScreen.allMovieScreen.UpComingFragment
 import com.hoangpd15.smartmovie.ui.homeScreen.movieScreen.MoviesFragment
-import com.hoangpd15.smartmovie.ui.homeScreen.nowPlayingScreen.NowPlayingFragment
-import com.hoangpd15.smartmovie.ui.homeScreen.popularScreen.PopularFragment
-import com.hoangpd15.smartmovie.ui.homeScreen.topRatedScreen.TopRatedFragment
-import com.hoangpd15.smartmovie.ui.homeScreen.upComingScreen.UpComingFragment
 
 class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null

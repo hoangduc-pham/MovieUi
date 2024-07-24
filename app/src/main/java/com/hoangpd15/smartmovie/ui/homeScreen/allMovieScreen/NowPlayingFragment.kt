@@ -1,62 +1,58 @@
-package com.hoangpd15.smartmovie.ui.homeScreen.topRatedScreen
+package com.hoangpd15.smartmovie.ui.homeScreen.allMovieScreen
 
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.hoangpd15.smartmovie.R
 import com.hoangpd15.smartmovie.adapter.ImageAdapter
-import com.hoangpd15.smartmovie.databinding.FragmentMoviesBinding
-import com.hoangpd15.smartmovie.databinding.FragmentTopRatedBinding
+import com.hoangpd15.smartmovie.databinding.FragmentNowPlayingBinding
 import com.hoangpd15.smartmovie.model.Movie
 import com.hoangpd15.smartmovie.ui.CarauselLayout
 import com.hoangpd15.smartmovie.ui.UiState
 import com.hoangpd15.smartmovie.ui.homeScreen.HomeFragmentDirections
 
-class TopRatedFragment : Fragment() {
-    private var _binding: FragmentTopRatedBinding? = null
+class NowPlayingFragment : Fragment() {
+    private var _binding: FragmentNowPlayingBinding? = null
     private val binding get() = _binding!!
     private lateinit var adapter: ImageAdapter
     private var listMovie: List<Movie> = emptyList()
     private var isSwitch: Boolean = false
-    private val topRatedViewModel: TopRatedViewModel by viewModels()
+    private val nowPlayingViewModel: NowPlayingViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentTopRatedBinding.inflate(inflater, container, false)
+        _binding = FragmentNowPlayingBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        topRatedViewModel.fetchTopRatedMovies(1)
+        nowPlayingViewModel.fetchMovies(1)
         initRecyclerView(view)
         observeViewModel()
         setupSwipeRefresh()
     }
 
     private fun initRecyclerView(view: View) {
-        binding.recyclerTopRate.layoutManager =
+        binding.recyclerNowPlaying.layoutManager =
             GridLayoutManager(requireContext(), 2, GridLayoutManager.VERTICAL, false)
-        binding.recyclerTopRate.layoutManager =
+        binding.recyclerNowPlaying.layoutManager =
             CarauselLayout(requireContext(), RecyclerView.VERTICAL, false)
-        binding.recyclerTopRate.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        binding.recyclerNowPlaying.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                if (!recyclerView.canScrollVertically(1) && topRatedViewModel.uiState.value !is UiState.LoadMore) {
-                    topRatedViewModel.loadMoreMovies()
+                if (!recyclerView.canScrollVertically(1) && nowPlayingViewModel.uiState.value !is UiState.LoadMore) {
+                    nowPlayingViewModel.loadMoreMovies()
                 }
             }
         })
@@ -65,7 +61,7 @@ class TopRatedFragment : Fragment() {
     private fun observeViewModel() {
 //        lifecycleScope.launch {                    if use stateflow
 //            nowPlayingViewModel.uiState.collect { uiState ->
-        topRatedViewModel.uiState.observe(viewLifecycleOwner, Observer { uiState ->
+        nowPlayingViewModel.uiState.observe(viewLifecycleOwner, Observer { uiState ->
             when (uiState) {
                 is UiState.Loading -> {
                     binding.icLoading.visibility = View.VISIBLE
@@ -114,7 +110,7 @@ class TopRatedFragment : Fragment() {
                 val action = HomeFragmentDirections.actionHomeFragmentToDetailFragment(id)
                 findNavController().navigate(action)
             }
-            binding.recyclerTopRate.adapter = adapter
+            binding.recyclerNowPlaying.adapter = adapter
         }
     }
 
@@ -136,11 +132,11 @@ class TopRatedFragment : Fragment() {
             val action = HomeFragmentDirections.actionHomeFragmentToDetailFragment(id)
             findNavController().navigate(action)
         }
-        binding.recyclerTopRate.adapter = adapter
+        binding.recyclerNowPlaying.adapter = adapter
     }
 
     private fun updateRecyclerViewLayoutManagers() {
-        binding.recyclerTopRate.layoutManager = if (isSwitch) {
+        binding.recyclerNowPlaying.layoutManager = if (isSwitch) {
             GridLayoutManager(requireContext(), 2, GridLayoutManager.VERTICAL, false)
         } else {
             CarauselLayout(requireContext(), RecyclerView.VERTICAL, false)
@@ -150,8 +146,8 @@ class TopRatedFragment : Fragment() {
     fun setSwitch(isChecked: Boolean) {
         isSwitch = isChecked
         if (isAdded) {
+            nowPlayingViewModel.fetchMovies(1)
             setupAdapterSwitch(listMovie)
-            topRatedViewModel.fetchTopRatedMovies(1)
             updateRecyclerViewLayoutManagers()
         }
     }
