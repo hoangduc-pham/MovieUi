@@ -10,6 +10,7 @@ import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -20,13 +21,15 @@ import com.hoangpd15.smartmovie.databinding.FragmentMoviesBinding
 import com.hoangpd15.smartmovie.databinding.FragmentNowPlayingBinding
 import com.hoangpd15.smartmovie.model.Movie
 import com.hoangpd15.smartmovie.ui.CarauselLayout
+import com.hoangpd15.smartmovie.ui.UiState
 import com.hoangpd15.smartmovie.ui.homeScreen.HomeFragmentDirections
+import kotlinx.coroutines.launch
 
 class NowPlayingFragment : Fragment() {
     private var _binding: FragmentNowPlayingBinding? = null
     private val binding get() = _binding!!
     private lateinit var adapter: ImageAdapter
-    private lateinit var listMovie: List<Movie>
+    private var listMovie: List<Movie> = emptyList()
     private var isSwitch: Boolean = false
     private val nowPlayingViewModel: NowPlayingViewModel by viewModels()
 
@@ -49,11 +52,12 @@ class NowPlayingFragment : Fragment() {
     private fun initRecyclerView(view: View) {
         binding.recyclerNowPlaying.layoutManager =
             GridLayoutManager(requireContext(), 2, GridLayoutManager.VERTICAL, false)
-        binding.recyclerNowPlaying.layoutManager = CarauselLayout(requireContext(), RecyclerView.VERTICAL, false)
+        binding.recyclerNowPlaying.layoutManager =
+            CarauselLayout(requireContext(), RecyclerView.VERTICAL, false)
         binding.recyclerNowPlaying.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                if (!recyclerView.canScrollVertically(1) && nowPlayingViewModel.isLoadMore.value == false) {
+                if (!recyclerView.canScrollVertically(1) && nowPlayingViewModel.uiState.value !is UiState.LoadMore) {
                     nowPlayingViewModel.loadMoreMovies()
                 }
             }
@@ -61,17 +65,33 @@ class NowPlayingFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        nowPlayingViewModel.nowPlayingMovies.observe(
-            viewLifecycleOwner,
-            Observer { nowPlayingMovies ->
-                listMovie = nowPlayingMovies ?: emptyList()
-                setupAdapter(nowPlayingMovies)
-            })
-        nowPlayingViewModel.isLoadMore.observe(viewLifecycleOwner, Observer { isLoadMore ->
-            binding.progressBar.visibility = if (isLoadMore) View.VISIBLE else View.GONE
-        })
-        nowPlayingViewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading ->
-            binding.icLoading.visibility = if (isLoading) View.VISIBLE else View.GONE
+//        lifecycleScope.launch {                    if use stateflow
+//            nowPlayingViewModel.uiState.collect { uiState ->
+        nowPlayingViewModel.uiState.observe(viewLifecycleOwner, Observer { uiState ->
+            when (uiState) {
+                is UiState.Loading -> {
+                    binding.icLoading.visibility = View.VISIBLE
+                    binding.progressBar.visibility = View.GONE
+                }
+
+                is UiState.LoadMore -> {
+                    binding.progressBar.visibility = View.VISIBLE
+                }
+
+                is UiState.Success<*> -> {
+                    binding.icLoading.visibility = View.GONE
+                    binding.progressBar.visibility = View.GONE
+                    val movies = uiState.list as List<Movie>
+                    setupAdapter(movies)
+//                    listMovie = uiState.movies
+//                    setupAdapter(uiState.movies)
+                }
+
+                is UiState.Error -> {
+                    binding.icLoading.visibility = View.GONE
+                    binding.progressBar.visibility = View.GONE
+                }
+            }
         })
     }
 
@@ -131,7 +151,7 @@ class NowPlayingFragment : Fragment() {
 
     fun setSwitch(isChecked: Boolean) {
         isSwitch = isChecked
-        if (::listMovie.isInitialized && isAdded) {
+        if (isAdded) {
             setupAdapterSwitch(listMovie)
             updateRecyclerViewLayoutManagers()
         }

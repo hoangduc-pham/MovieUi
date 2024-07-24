@@ -6,14 +6,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hoangpd15.smartmovie.model.Genres
 import com.hoangpd15.smartmovie.model.dataRemote.RetrofitInstance
+import com.hoangpd15.smartmovie.ui.UiState
 import kotlinx.coroutines.launch
 
-class GenresViewModel  : ViewModel(){
-    private val _listGenres = MutableLiveData<List<Genres>>()
-    val listGenres: LiveData<List<Genres>> get() = _listGenres
-
-    private val _isLoading = MutableLiveData<Boolean>()
-    val isLoading: LiveData<Boolean> get() = _isLoading
+class GenresViewModel : ViewModel() {
+    private val _uiState = MutableLiveData<UiState>()
+    val uiState: LiveData<UiState> get() = _uiState
 
     init {
         fetchListGenres()
@@ -21,14 +19,12 @@ class GenresViewModel  : ViewModel(){
 
     private fun fetchListGenres() {
         viewModelScope.launch {
-            _isLoading.postValue(true)
+            _uiState.value = UiState.Loading
             try {
                 val listGenres = RetrofitInstance.apiListGenres.getListGenres().genres
-                _listGenres.postValue(listGenres)
+                _uiState.value = UiState.Success(listGenres)
             } catch (e: Exception) {
-                _listGenres.postValue(emptyList())
-            } finally {
-                _isLoading.postValue(false)
+                _uiState.value = UiState.Error(e.message ?: "Unknown error")
             }
         }
     }

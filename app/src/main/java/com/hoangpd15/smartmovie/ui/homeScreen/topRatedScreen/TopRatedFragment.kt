@@ -20,13 +20,14 @@ import com.hoangpd15.smartmovie.databinding.FragmentMoviesBinding
 import com.hoangpd15.smartmovie.databinding.FragmentTopRatedBinding
 import com.hoangpd15.smartmovie.model.Movie
 import com.hoangpd15.smartmovie.ui.CarauselLayout
+import com.hoangpd15.smartmovie.ui.UiState
 import com.hoangpd15.smartmovie.ui.homeScreen.HomeFragmentDirections
 
 class TopRatedFragment : Fragment() {
     private var _binding: FragmentTopRatedBinding? = null
     private val binding get() = _binding!!
     private lateinit var adapter: ImageAdapter
-    private lateinit var listMovie: List<Movie>
+    private var listMovie: List<Movie> = emptyList()
     private var isSwitch: Boolean = false
     private val topRatedViewModel: TopRatedViewModel by viewModels()
 
@@ -49,11 +50,12 @@ class TopRatedFragment : Fragment() {
     private fun initRecyclerView(view: View) {
         binding.recyclerTopRate.layoutManager =
             GridLayoutManager(requireContext(), 2, GridLayoutManager.VERTICAL, false)
-        binding.recyclerTopRate.layoutManager = CarauselLayout(requireContext(), RecyclerView.VERTICAL, false)
+        binding.recyclerTopRate.layoutManager =
+            CarauselLayout(requireContext(), RecyclerView.VERTICAL, false)
         binding.recyclerTopRate.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                if (!recyclerView.canScrollVertically(1) && topRatedViewModel.isLoadMore.value == false) {
+                if (!recyclerView.canScrollVertically(1) && topRatedViewModel.uiState.value !is UiState.LoadMore) {
                     topRatedViewModel.loadMoreMovies()
                 }
             }
@@ -61,15 +63,33 @@ class TopRatedFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        topRatedViewModel.topRatedMovies.observe(viewLifecycleOwner, Observer { topRatedMovies ->
-            listMovie = topRatedMovies ?: emptyList()
-            setupAdapter(topRatedMovies)
-        })
-        topRatedViewModel.isLoadMore.observe(viewLifecycleOwner, Observer { isLoadMore ->
-            binding.progressBar.visibility = if (isLoadMore) View.VISIBLE else View.GONE
-        })
-        topRatedViewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading ->
-            binding.icLoading.visibility = if (isLoading) View.VISIBLE else View.GONE
+//        lifecycleScope.launch {                    if use stateflow
+//            nowPlayingViewModel.uiState.collect { uiState ->
+        topRatedViewModel.uiState.observe(viewLifecycleOwner, Observer { uiState ->
+            when (uiState) {
+                is UiState.Loading -> {
+                    binding.icLoading.visibility = View.VISIBLE
+                    binding.progressBar.visibility = View.GONE
+                }
+
+                is UiState.LoadMore -> {
+                    binding.progressBar.visibility = View.VISIBLE
+                }
+
+                is UiState.Success<*> -> {
+                    binding.icLoading.visibility = View.GONE
+                    binding.progressBar.visibility = View.GONE
+                    val movies = uiState.list as List<Movie>
+                    setupAdapter(movies)
+//                    listMovie = uiState.movies
+//                    setupAdapter(uiState.movies)
+                }
+
+                is UiState.Error -> {
+                    binding.icLoading.visibility = View.GONE
+                    binding.progressBar.visibility = View.GONE
+                }
+            }
         })
     }
 
@@ -129,7 +149,7 @@ class TopRatedFragment : Fragment() {
 
     fun setSwitch(isChecked: Boolean) {
         isSwitch = isChecked
-        if (::listMovie.isInitialized && isAdded) {
+        if (isAdded) {
             setupAdapterSwitch(listMovie)
             topRatedViewModel.fetchTopRatedMovies(1)
             updateRecyclerViewLayoutManagers()

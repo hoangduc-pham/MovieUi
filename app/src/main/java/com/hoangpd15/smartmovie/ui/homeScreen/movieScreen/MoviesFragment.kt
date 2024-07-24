@@ -21,6 +21,7 @@ import com.hoangpd15.smartmovie.databinding.FragmentListMovieGenresBinding
 import com.hoangpd15.smartmovie.databinding.FragmentMoviesBinding
 import com.hoangpd15.smartmovie.model.Movie
 import com.hoangpd15.smartmovie.ui.CarauselLayout
+import com.hoangpd15.smartmovie.ui.UiState
 import com.hoangpd15.smartmovie.ui.homeScreen.HomeFragmentDirections
 
 
@@ -88,32 +89,38 @@ class MoviesFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        val movieObservers = listOf(
-            moviesViewModel.popularMovies to recyclerViews[0],
-            moviesViewModel.topRatedMovies to recyclerViews[1],
-            moviesViewModel.nowPlayingMovies to recyclerViews[2],
-            moviesViewModel.upComingMovies to recyclerViews[3]
-        )
+        moviesViewModel.uiState.observe(viewLifecycleOwner, Observer { uiState ->
+            when (uiState) {
+                is UiState.Loading -> {
+                    binding.icLoading.visibility = View.VISIBLE
+                }
+
+                is UiState.Success<*> -> {
+                    binding.icLoading.visibility = View.GONE
+                    listMovie = uiState.list as List<Movie>
+                    recyclerViews.forEach { recyclerView ->
+                        setupAdapter(listMovie, recyclerView)
+                    }
+                }
+
+                is UiState.Error -> {
+                    binding.icLoading.visibility = View.GONE
+                }
+
+                is UiState.LoadMore -> TODO()
+            }
+        })
         val titleObservers = listOf(
             moviesViewModel.textPopular to textTitles[0],
             moviesViewModel.textTopRated to textTitles[1],
             moviesViewModel.textNowPlaying to textTitles[2],
             moviesViewModel.textUpComing to textTitles[3]
         )
-        movieObservers.forEach { (movieLiveData, recyclerView) ->
-            movieLiveData.observe(viewLifecycleOwner) { movies ->
-                listMovie = movies
-                setupAdapter(movies, recyclerView)
-            }
-        }
         titleObservers.forEach { (titleLiveData, title) ->
             titleLiveData.observe(viewLifecycleOwner, Observer { isVisible ->
                 title.visibility = if (isVisible) View.VISIBLE else View.GONE
             })
         }
-        moviesViewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading ->
-            binding.icLoading.visibility = if (isLoading) View.VISIBLE else View.GONE
-        })
     }
 
     private fun setupAdapter(movies: List<Movie>, recyclerView: RecyclerView) {
@@ -124,7 +131,15 @@ class MoviesFragment : Fragment() {
         val overView = limitedMovies.map { it.overview }
         val voteCountList = limitedMovies.map { it.voteCount.toString() }
 
-        adapter = ImageAdapter(imageUrlList, idList, nameMovieList, voteCountList, overView, isSwitch, requireContext()) { id ->
+        adapter = ImageAdapter(
+            imageUrlList,
+            idList,
+            nameMovieList,
+            voteCountList,
+            overView,
+            isSwitch,
+            requireContext()
+        ) { id ->
             val action = HomeFragmentDirections.actionHomeFragmentToDetailFragment(id)
             findNavController().navigate(action)
         }
@@ -141,6 +156,7 @@ class MoviesFragment : Fragment() {
             }
         }
     }
+
     private fun setupSwipeRefresh() {
         binding.swipeRefreshLayout.setOnRefreshListener {
             moviesViewModel.refreshMovies()

@@ -92,22 +92,22 @@ fun MovieDetailScreen(
         ) {
             CircularProgressIndicator()
         }
-    }
-    Column(
-        modifier = modifier,
-    ) {
-        MovieInfoSectionView(movieDetailViewModel, viewAll) { viewAll = !viewAll }
-        LazyColumn(state = listState) {
-            item {
-                MovieCastListSectionView(movieDetailViewModel)
-            }
-            item {
-                SimilarMoviesSectionView()
+    } else {
+        Column(
+            modifier = modifier,
+        ) {
+            MovieInfoSectionView(movieDetailViewModel, viewAll) { viewAll = !viewAll }
+            LazyColumn(state = listState) {
+                item {
+                    MovieCastListSectionView(movieDetailViewModel)
+                }
+                item {
+                    SimilarMoviesSectionView()
+                }
             }
         }
     }
 }
-
 @Preview(showBackground = true)
 @Composable
 fun DetailScreenPreview() {

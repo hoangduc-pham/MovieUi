@@ -6,23 +6,19 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hoangpd15.smartmovie.model.dataRemote.RetrofitInstance
 import com.hoangpd15.smartmovie.model.Movie
+import com.hoangpd15.smartmovie.ui.UiState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class PopularViewModel : ViewModel() {
-    private val _popularMovies = MutableLiveData<List<Movie>>()
-    val popularMovies: LiveData<List<Movie>> get() = _popularMovies
 
-    private val _isLoadMore = MutableLiveData<Boolean>()
-    val isLoadMore: LiveData<Boolean> get() = _isLoadMore
-
-
-    private val _isLoading = MutableLiveData<Boolean>()
-    val isLoading: LiveData<Boolean> get() = _isLoading
+    private val _uiState = MutableLiveData<UiState>()
+    val uiState: LiveData<UiState> get() = _uiState
 
     private var currentPage = 1
+    private var currentMovies: List<Movie> = emptyList()
 
     init {
         fetchPopularMovies(currentPage)
@@ -30,14 +26,14 @@ class PopularViewModel : ViewModel() {
 
     fun fetchPopularMovies(page: Int) {
         viewModelScope.launch {
-            _isLoading.postValue(true)
+            _uiState.value = UiState.Loading
             loadMoviesFromApi(page)
         }
     }
 
     fun loadMoreMovies() {
         viewModelScope.launch {
-            _isLoadMore.postValue(true)
+            _uiState.value = UiState.LoadMore
             delay(1000)
             loadMoviesFromApi(currentPage)
         }
@@ -47,15 +43,11 @@ class PopularViewModel : ViewModel() {
             val popularMovies = withContext(Dispatchers.IO) {
                 RetrofitInstance.apiMoviePopular.getPopularMovies(page).results
             }
-            val currentList = _popularMovies.value?.toMutableList() ?: mutableListOf()
-            currentList.addAll(popularMovies)
-            _popularMovies.postValue(currentList)
+            currentMovies = (currentMovies + popularMovies).distinct()
+            _uiState.value =  UiState.Success(currentMovies)
             currentPage++
         } catch (e: Exception) {
-            _popularMovies.postValue(emptyList())
-        } finally {
-            _isLoadMore.postValue(false)
-            _isLoading.postValue(false)
+            _uiState.value = UiState.Error(e.message ?: "Unknown error")
         }
     }
 }

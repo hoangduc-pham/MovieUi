@@ -20,6 +20,7 @@ import com.hoangpd15.smartmovie.databinding.FragmentListMovieGenresBinding
 import com.hoangpd15.smartmovie.databinding.FragmentSearchBinding
 import com.hoangpd15.smartmovie.model.Movie
 import com.hoangpd15.smartmovie.ui.CarauselLayout
+import com.hoangpd15.smartmovie.ui.UiState
 
 class ListMovieGenresFragment : Fragment() {
     private var _binding: FragmentListMovieGenresBinding? = null
@@ -41,6 +42,7 @@ class ListMovieGenresFragment : Fragment() {
         initRecyclerView(view)
         observeViewModel()
     }
+
     private fun initRecyclerView(view: View) {
         val genreId = args.idGenre
         movieByGenresViewModel.fetchMoviesByGenre(genreId)
@@ -50,12 +52,28 @@ class ListMovieGenresFragment : Fragment() {
         binding.topAppBar.setNavigationOnClickListener {
             findNavController().popBackStack()
         }
-        binding.recyclerViewGenresMovie.layoutManager = CarauselLayout(requireContext(), RecyclerView.VERTICAL, false)
+        binding.recyclerViewGenresMovie.layoutManager =
+            CarauselLayout(requireContext(), RecyclerView.VERTICAL, false)
     }
+
     private fun observeViewModel() {
-        movieByGenresViewModel.moviesByGenre.observe(viewLifecycleOwner, Observer { movies  ->
-            binding.icLoading.visibility = View.GONE
-            setupAdapter(movies)
+        movieByGenresViewModel.uiState.observe(viewLifecycleOwner, Observer { uiState ->
+            when (uiState) {
+                is UiState.Loading -> {
+                    binding.icLoading.visibility = View.VISIBLE
+                }
+
+                is UiState.Success<*> -> {
+                    binding.icLoading.visibility = View.GONE
+                    setupAdapter(uiState.list as List<Movie>)
+                }
+
+                is UiState.Error -> {
+                    binding.icLoading.visibility = View.GONE
+                }
+
+                is UiState.LoadMore -> TODO()
+            }
         })
     }
 
@@ -66,9 +84,9 @@ class ListMovieGenresFragment : Fragment() {
         val idMovie = movieList.map { it.id }
 
         adapter = ImageAdapterSearch(imageUrlList, nameMovieList, rateList, idMovie)
-        {
-            id ->
-            val action = ListMovieGenresFragmentDirections.actionListMovieGenresFragmentToDetailFragment(id)
+        { id ->
+            val action =
+                ListMovieGenresFragmentDirections.actionListMovieGenresFragmentToDetailFragment(id)
             findNavController().navigate(action)
         }
         binding.recyclerViewGenresMovie.adapter = adapter

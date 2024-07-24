@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.ProgressBar
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -20,13 +21,15 @@ import com.hoangpd15.smartmovie.databinding.FragmentMoviesBinding
 import com.hoangpd15.smartmovie.databinding.FragmentUpComingBinding
 import com.hoangpd15.smartmovie.model.Movie
 import com.hoangpd15.smartmovie.ui.CarauselLayout
+import com.hoangpd15.smartmovie.ui.UiState
 import com.hoangpd15.smartmovie.ui.homeScreen.HomeFragmentDirections
+import kotlinx.coroutines.launch
 
 class UpComingFragment : Fragment() {
     private var _binding: FragmentUpComingBinding? = null
     private val binding get() = _binding!!
     private lateinit var adapter: ImageAdapter
-    private lateinit var listMovie: List<Movie>
+    private var listMovie: List<Movie> = emptyList()
     private var isSwitch: Boolean = false
     private val upComingViewModel: UpComingViewModel by viewModels()
 
@@ -52,7 +55,7 @@ class UpComingFragment : Fragment() {
         binding.recyclerUpComing.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                if (!recyclerView.canScrollVertically(1) && upComingViewModel.isLoadMore.value == false) {
+                if (!recyclerView.canScrollVertically(1) && upComingViewModel.uiState.value !is UiState.LoadMore) {
                     upComingViewModel.loadMoreMovies()
                 }
             }
@@ -60,15 +63,31 @@ class UpComingFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        upComingViewModel.upComingMovies.observe(viewLifecycleOwner, Observer { upComingMovies ->
-            listMovie = upComingMovies ?: emptyList()
-            setupAdapter(upComingMovies)
-        })
-        upComingViewModel.isLoadMore.observe(viewLifecycleOwner, Observer { isLoadMore ->
-            binding.progressBar.visibility = if (isLoadMore) View.VISIBLE else View.GONE
-        })
-        upComingViewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading ->
-            binding.icLoading.visibility = if (isLoading) View.VISIBLE else View.GONE
+//        lifecycleScope.launch {                    if use stateflow
+//            nowPlayingViewModel.uiState.collect { uiState ->
+        upComingViewModel.uiState.observe(viewLifecycleOwner, Observer { uiState ->
+            when (uiState) {
+                is UiState.Loading -> {
+                    binding.icLoading.visibility = View.VISIBLE
+                    binding.progressBar.visibility = View.GONE
+                }
+
+                is UiState.LoadMore -> {
+                    binding.progressBar.visibility = View.VISIBLE
+                }
+
+                is UiState.Success<*> -> {
+                    binding.icLoading.visibility = View.GONE
+                    binding.progressBar.visibility = View.GONE
+                    val movies = uiState.list as List<Movie>
+                    setupAdapter(movies)
+                }
+
+                is UiState.Error -> {
+                    binding.icLoading.visibility = View.GONE
+                    binding.progressBar.visibility = View.GONE
+                }
+            }
         })
     }
 
@@ -128,7 +147,7 @@ class UpComingFragment : Fragment() {
 
     fun setSwitch(isChecked: Boolean) {
         isSwitch = isChecked
-        if (::listMovie.isInitialized && isAdded) {
+        if (isAdded) {
             setupAdapterSwitch(listMovie)
             upComingViewModel.fetchUpComingMovies(1)
             updateRecyclerViewLayoutManagers()

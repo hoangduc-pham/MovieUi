@@ -17,6 +17,7 @@ import com.hoangpd15.smartmovie.databinding.FragmentGenresBinding
 import com.hoangpd15.smartmovie.databinding.FragmentSearchBinding
 import com.hoangpd15.smartmovie.model.Genres
 import com.hoangpd15.smartmovie.ui.CarauselLayout
+import com.hoangpd15.smartmovie.ui.UiState
 
 class GenresFragment : Fragment() {
     private lateinit var adapter: ListGenresAdapter
@@ -46,14 +47,26 @@ class GenresFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        listGenresViewModel.listGenres.observe(viewLifecycleOwner, Observer { listGenres ->
-            setupAdapter(listGenres)
-        })
-        listGenresViewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading ->
-            binding.icLoading.visibility = if (isLoading) View.VISIBLE else View.GONE
+        listGenresViewModel.uiState.observe(viewLifecycleOwner, Observer { uiState ->
+            when (uiState) {
+                is UiState.Loading -> {
+                    binding.icLoading.visibility = View.VISIBLE
+                }
+
+                is UiState.Success<*> -> {
+                    binding.icLoading.visibility = View.GONE
+                    setupAdapter(uiState.list as List<Genres>)
+                }
+
+                is UiState.Error -> {
+                    binding.icLoading.visibility = View.GONE
+                }
+                is UiState.LoadMore -> {
+                    TODO()
+                }
+            }
         })
     }
-
     private fun setupAdapter(listGenres: List<Genres>) {
         val nameGenres = listGenres.map { it.name }
         val idGenres = listGenres.map { it.id }

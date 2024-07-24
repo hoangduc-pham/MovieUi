@@ -3,25 +3,21 @@ package com.hoangpd15.smartmovie.ui.genresScreen.movieByGenres
 import androidx.lifecycle.*
 import com.hoangpd15.smartmovie.model.Movie
 import com.hoangpd15.smartmovie.model.dataRemote.RetrofitInstance
+import com.hoangpd15.smartmovie.ui.UiState
 import kotlinx.coroutines.launch
 
 class MoviesByGenreViewModel : ViewModel() {
-    private val _moviesByGenre = MutableLiveData<List<Movie>>()
-    val moviesByGenre: LiveData<List<Movie>> get() = _moviesByGenre
-
-    private val _isLoading = MutableLiveData<Boolean>()
-    val isLoading: LiveData<Boolean> get() = _isLoading
+    private val _uiState = MutableLiveData<UiState>()
+    val uiState: LiveData<UiState> get() = _uiState
 
     fun fetchMoviesByGenre(genreId: Int) {
         viewModelScope.launch {
-            _isLoading.postValue(true)
+           _uiState.value = UiState.Loading
             try {
                 val response = RetrofitInstance.apiAllMovie.getMoviesByGenre(genreId)
-                _moviesByGenre.postValue(response.results)
+                _uiState.value = UiState.Success(response.results)
             } catch (e: Exception) {
-                _moviesByGenre.postValue(emptyList())
-            } finally {
-                _isLoading.postValue(false)
+                _uiState.value = UiState.Error(e.message ?: "Unknown error")
             }
         }
     }
