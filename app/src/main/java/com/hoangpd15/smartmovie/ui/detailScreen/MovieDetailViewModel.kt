@@ -38,7 +38,7 @@ class MovieDetailViewModel : ViewModel() {
                 val castResponse = RetrofitInstance.apiCastMovie.getCastMovie(movieId)
                 _castMovie.postValue(castResponse.cast)
             } catch (e: Exception) {
-                Log.e("MovieDetailViewModel", "Error fetching movie details: ${e.message}")
+//                Log.e("MovieDetailViewModel", "Error fetching movie details: ${e.message}")
             } finally {
                 _isLoading.postValue(false)
             }

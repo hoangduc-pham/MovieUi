@@ -58,9 +58,7 @@ class MoviesViewModel : ViewModel() {
             _textPopular.postValue(false)
             _uiState.value = UiState.Loading
             try {
-                val movies = withContext(Dispatchers.IO) {
-                    popularMoviesApi.getPopularMovies(1).results
-                }
+                val movies = popularMoviesApi.getPopularMovies(1).results
                 _uiState.value = UiState.Success(movies)
             } catch (e: Exception) {
                 _uiState.value = UiState.Error(e.message ?: "Unknown error")
@@ -75,9 +73,7 @@ class MoviesViewModel : ViewModel() {
             _textTopRated.postValue(false)
             _uiState.value = UiState.Loading
             try {
-                val movies = withContext(Dispatchers.IO) {
-                    topRateMoviesApi.getTopRateMovies(1).results
-                }
+                val movies = topRateMoviesApi.getTopRateMovies(1).results
                 _uiState.value = UiState.Success(movies)
             } catch (e: Exception) {
                 _uiState.value = UiState.Error(e.message ?: "Unknown error")

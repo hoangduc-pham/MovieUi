@@ -46,7 +46,7 @@ class ImageAdapter(
     }
 
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
-        Log.e("MovieDetailViewModel", "Error fetching movie details")
+//        Log.e("MovieDetailViewModel", "Error fetching movie details")
         val idMovie = listId[position]
         holder.itemView.setOnClickListener {
             clickListener(idMovie)
@@ -114,6 +114,6 @@ class ImageAdapter(
         nameMovie = newNameMovieList
         voteCount = newVoteCountList
         overView = newOverView
-        notifyDataSetChanged()
+//        notifyDataSetChanged()
     }
 }
