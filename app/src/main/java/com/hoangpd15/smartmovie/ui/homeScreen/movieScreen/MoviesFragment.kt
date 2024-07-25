@@ -1,5 +1,6 @@
 package com.hoangpd15.smartmovie.ui.homeScreen.movieScreen
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -128,6 +129,7 @@ class MoviesFragment(private val moveToTab: (Int) -> Unit) : Fragment() {
             is UiStateAllMovie.Error -> {
                 loadingIndicator.visibility = View.GONE
                 recyclerView.visibility = View.GONE
+                showErrorDialog()
             }
         }
 
@@ -143,7 +145,14 @@ class MoviesFragment(private val moveToTab: (Int) -> Unit) : Fragment() {
             })
         }
     }
-
+    private fun showErrorDialog() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Load data failed")
+            .setMessage("Can't get data from server, please try again later.")
+            .setPositiveButton("Reload") { _, _ ->
+                moviesViewModel.refreshMovies()
+            }.show()
+    }
     private fun setupAdapter(movies: List<Movie>, recyclerView: RecyclerView) {
         val limitedMovies = movies.take(4)
         val imageUrlList = limitedMovies.map { it.posterPath }
