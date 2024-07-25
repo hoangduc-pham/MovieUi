@@ -11,17 +11,20 @@ import com.hoangpd15.smartmovie.databinding.FragmentHomeBinding
 import com.hoangpd15.smartmovie.ui.homeScreen.allMovieScreen.NowPlayingFragment
 import com.hoangpd15.smartmovie.ui.homeScreen.allMovieScreen.PopularFragment
 import com.hoangpd15.smartmovie.ui.homeScreen.allMovieScreen.TopRatedFragment
-import com.hoangpd15.smartmovie.ui.homeScreen.allMovieScreen.UpComingFragment
+import com.hoangpd15.smartmovie.ui.homeScreen.allMovieScreen.TypeFragment
 import com.hoangpd15.smartmovie.ui.homeScreen.movieScreen.MoviesFragment
 
 class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
     private val movieFragment = MoviesFragment()
-    private val popularFragment = PopularFragment()
-    private val topRatedFragment = TopRatedFragment()
-    private val nowPlayingFragment = NowPlayingFragment()
-    private val upComingFragment = UpComingFragment()
+    private val popularFragment = TypeFragment("popular")
+    private val topRatedFragment = TypeFragment("topRate")
+    private val nowPlayingFragment = TypeFragment("nowPlaying")
+    private val upComingFragment = TypeFragment("upComing")
+//    private val topRatedFragment = TopRatedFragment()
+//    private val nowPlayingFragment = NowPlayingFragment()
+//    private val upComingFragment = UpComingFragment()
     private val fragments: List<Fragment> = listOf(
         movieFragment,
         popularFragment,

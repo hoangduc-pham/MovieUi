@@ -84,6 +84,7 @@ class MoviesFragment : Fragment() {
             }
         }
     }
+
     private fun observeViewModel() {
         moviesViewModel.uiStatePopular.observe(viewLifecycleOwner, Observer { uiState ->
             handleUiState(uiState, binding.recyclerViewPopular, binding.icLoading)
@@ -101,17 +102,24 @@ class MoviesFragment : Fragment() {
             handleUiState(uiState, binding.recyclerViewUpComing, binding.icLoading)
         })
     }
-    private fun handleUiState(uiState: UiStateAllMovie, recyclerView: RecyclerView, loadingIndicator: View) {
+
+    private fun handleUiState(
+        uiState: UiStateAllMovie,
+        recyclerView: RecyclerView,
+        loadingIndicator: View
+    ) {
         when (uiState) {
             is UiStateAllMovie.Loading -> {
                 loadingIndicator.visibility = View.VISIBLE
                 recyclerView.visibility = View.GONE
             }
+
             is UiStateAllMovie.Success -> {
                 loadingIndicator.visibility = View.GONE
                 recyclerView.visibility = View.VISIBLE
                 setupAdapter(uiState.list, recyclerView)
             }
+
             is UiStateAllMovie.Error -> {
                 loadingIndicator.visibility = View.GONE
                 recyclerView.visibility = View.GONE
@@ -120,7 +128,7 @@ class MoviesFragment : Fragment() {
             }
         }
 
-    val titleObservers = listOf(
+        val titleObservers = listOf(
             moviesViewModel.textPopular to textTitles[0],
             moviesViewModel.textTopRated to textTitles[1],
             moviesViewModel.textNowPlaying to textTitles[2],

@@ -14,17 +14,23 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.hoangpd15.smartmovie.adapter.ImageAdapter
+import com.hoangpd15.smartmovie.databinding.FragmentTopRatedBinding
 import com.hoangpd15.smartmovie.databinding.FragmentUpComingBinding
 import com.hoangpd15.smartmovie.model.Movie
 import com.hoangpd15.smartmovie.ui.UiState
 import com.hoangpd15.smartmovie.ui.homeScreen.HomeFragmentDirections
 
-class UpComingFragment : Fragment() {
+
+class TypeFragment(type: String) : Fragment() {
     private var _binding: FragmentUpComingBinding? = null
     private val binding get() = _binding!!
     private lateinit var adapter: ImageAdapter
     private var listMovie: List<Movie> = emptyList()
+    private var typeMovie: String = type
     private var isSwitch: Boolean = false
+    private val popularViewModel: PopularViewModel by viewModels()
+    private val topRatedViewModel: TopRatedViewModel by viewModels()
+    private val nowPlayingViewModel: NowPlayingViewModel by viewModels()
     private val upComingViewModel: UpComingViewModel by viewModels()
 
     override fun onCreateView(
@@ -37,7 +43,12 @@ class UpComingFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        upComingViewModel.fetchMovies(1)
+        when(typeMovie){
+            "popular" -> popularViewModel.fetchMovies(1)
+            "topRated" -> topRatedViewModel.fetchMovies(1)
+            "nowPlaying" -> nowPlayingViewModel.fetchMovies(1)
+            "upComing" -> upComingViewModel.fetchMovies(1)
+        }
         initRecyclerView()
         observeViewModel()
         setupSwipeRefresh()
@@ -52,17 +63,36 @@ class UpComingFragment : Fragment() {
         binding.recyclerUpComing.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                if (!recyclerView.canScrollVertically(1) && upComingViewModel.uiState.value !is UiState.LoadMore) {
-                    upComingViewModel.loadMoreMovies()
+                when(typeMovie) {
+                    "popular" -> if (!recyclerView.canScrollVertically(1) && popularViewModel.uiState.value !is UiState.LoadMore) {
+                        popularViewModel.loadMoreMovies()
+                    }
+
+                    "topRated" -> if (!recyclerView.canScrollVertically(1) && topRatedViewModel.uiState.value !is UiState.LoadMore) {
+                        topRatedViewModel.loadMoreMovies()
+                    }
+
+                    "nowPlaying" -> if (!recyclerView.canScrollVertically(1) && nowPlayingViewModel.uiState.value !is UiState.LoadMore) {
+                        nowPlayingViewModel.loadMoreMovies()
+                    }
+
+                    "upComing" -> if (!recyclerView.canScrollVertically(1) && upComingViewModel.uiState.value !is UiState.LoadMore) {
+                        upComingViewModel.loadMoreMovies()
+                    }
                 }
             }
         })
     }
 
     private fun observeViewModel() {
-//        lifecycleScope.launch {                    if use stateflow
-//            nowPlayingViewModel.uiState.collect { uiState ->
-        upComingViewModel.uiState.observe(viewLifecycleOwner, Observer { uiState ->
+        val typeModel = when(typeMovie) {
+            "popular" -> popularViewModel
+            "topRated" -> topRatedViewModel
+            "nowPlaying" -> nowPlayingViewModel
+            "upComing" -> upComingViewModel
+            else -> popularViewModel
+        }
+        typeModel.uiState.observe(viewLifecycleOwner, Observer { uiState ->
             when (uiState) {
                 is UiState.Loading -> {
                     binding.icLoading.visibility = View.VISIBLE

@@ -19,7 +19,7 @@ import com.hoangpd15.smartmovie.model.Movie
 import com.hoangpd15.smartmovie.ui.UiState
 import com.hoangpd15.smartmovie.ui.homeScreen.HomeFragmentDirections
 
-class PopularFragment : Fragment() {
+class PopularFragment(type: String) : Fragment() {
     private var _binding: FragmentPopularBinding? = null
     private val binding get() = _binding!!
     private lateinit var adapter: ImageAdapter
