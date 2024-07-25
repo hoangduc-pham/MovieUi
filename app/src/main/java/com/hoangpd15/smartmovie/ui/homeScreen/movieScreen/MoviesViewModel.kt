@@ -71,10 +71,9 @@ class MoviesViewModel : ViewModel() {
             try {
                 val movies = popularMoviesApi.getPopularMovies(1).results
                 _uiStatePopular.value = UiStateAllMovie.Success(movies, UiStateAllMovie.MovieType.POPULAR)
+                _textPopular.postValue(true)
             } catch (e: Exception) {
                 _uiStatePopular.value = UiStateAllMovie.Error(e.message ?: "Unknown error")
-            } finally {
-                _textPopular.postValue(true)
             }
         }
     }
@@ -86,10 +85,9 @@ class MoviesViewModel : ViewModel() {
             try {
                 val movies = topRateMoviesApi.getTopRateMovies(1).results
                 _uiStateTopRated.value = UiStateAllMovie.Success(movies, UiStateAllMovie.MovieType.TOP_RATED)
+                _textTopRated.postValue(true)
             } catch (e: Exception) {
                 _uiStateTopRated.value = UiStateAllMovie.Error(e.message ?: "Unknown error")
-            } finally {
-                _textTopRated.postValue(true)
             }
         }
     }
@@ -101,10 +99,9 @@ class MoviesViewModel : ViewModel() {
             try {
                 val movies = upComingMoviesApi.getUpComingMovies(1).results
                 _uiStateUpComing.value = UiStateAllMovie.Success(movies, UiStateAllMovie.MovieType.UPCOMING)
+                _textUpComing.postValue(true)
             } catch (e: Exception) {
                 _uiStateUpComing.value = UiStateAllMovie.Error(e.message ?: "Unknown error")
-            } finally {
-                _textUpComing.postValue(true)
             }
         }
     }
@@ -117,10 +114,9 @@ class MoviesViewModel : ViewModel() {
                 val movies =
                     nowPlayingMoviesApi.getNowPlayingMovies(1).results
                 _uiStateNowPlaying.value = UiStateAllMovie.Success(movies, UiStateAllMovie.MovieType.NOW_PLAYING)
+                _textNowPlaying.postValue(true)
             } catch (e: Exception) {
                 _uiStateNowPlaying.value = UiStateAllMovie.Error(e.message ?: "Unknown error")
-            } finally {
-                _textNowPlaying.postValue(true)
             }
         }
     }

@@ -42,6 +42,7 @@
                         android:gravity="end"
                         android:id="@+id/viewAllPopular"
                         android:text="See All >  "
+                        android:textColor="@color/purple_300"
                         android:textSize="18sp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
@@ -75,6 +76,7 @@
                 android:id="@+id/viewAllTopRated"
                 android:text="See All >  "
                 android:textSize="18sp"
+                android:textColor="@color/purple_300"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
             </TextView>
@@ -107,6 +109,7 @@
                 android:id="@+id/viewAllNowPlaying"
                 android:text="See All >  "
                 android:textSize="18sp"
+                android:textColor="@color/purple_300"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
             </TextView>
@@ -138,6 +141,7 @@
                 android:gravity="end"
                 android:id="@+id/viewAllUpComing"
                 android:text="See All >  "
+                android:textColor="@color/purple_300"
                 android:textSize="18sp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">

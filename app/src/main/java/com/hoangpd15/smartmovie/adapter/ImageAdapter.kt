@@ -35,7 +35,79 @@ class ImageAdapter(
         val voteCount: TextView = itemView.findViewById(R.id.voteCount)
         val favoriteIcon: ImageView = itemView.findViewById(R.id.favoriteIcon)
     }
+    inner class EventHandler(
+        private val holder: ImageViewHolder,
+        private val position: Int
+    ) {
 
+        fun bind() {
+            setupClickListener()
+            loadImage()
+            setMovieDetails()
+            setupFavoriteIcon()
+        }
+        private fun setupClickListener() {
+            holder.itemView.setOnClickListener {
+                clickListener(listId[position])
+            }
+        }
+
+        private fun loadImage() {
+            val imageUrl = "https://image.tmdb.org/t/p/w500" + imageUrlList[position]
+            Glide.with(holder.imageView.context)
+                .load(imageUrl)
+                .into(holder.imageView)
+        }
+
+        private fun setMovieDetails() {
+            val movieName = nameMovie[position]
+            holder.nameMovie.text = if (movieName.length > 20 && isGridView) {
+                movieName.substring(0, 15) + "..."
+            } else {
+                movieName
+            }
+            holder.voteCount.text = if (isGridView) {
+                "Lượt xem: ${voteCount[position]}"
+            } else {
+                val overviewText = overView[position]
+                if (overviewText.length < 100) overviewText else overviewText.substring(0, 95) + "..."
+            }
+        }
+
+        private fun setupFavoriteIcon() {
+            val isFavorite = runBlocking {
+                AppDatabase.getDatabase(context).favoriteMovieDao().isFavoriteMovie(listId[position])
+            }
+            holder.favoriteIcon.setImageResource(
+                if (isFavorite) R.drawable.ic_baseline_star_24
+                else R.drawable.ic_baseline_star_border_24
+            )
+            holder.favoriteIcon.setOnClickListener {
+                handleFavoriteClick(isFavorite)
+            }
+        }
+
+        private fun handleFavoriteClick(isFavorite: Boolean) {
+            if (isFavorite) {
+                (context as MainActivity).lifecycleScope.launch {
+                    AppDatabase.getDatabase(context).favoriteMovieDao().deleteById(listId[position])
+                    holder.favoriteIcon.setImageResource(R.drawable.ic_baseline_star_border_24)
+                }
+            } else {
+                val movie = FavoriteMovie(
+                    id = listId[position],
+                    title = nameMovie[position],
+                    posterPath = "https://image.tmdb.org/t/p/w500" + imageUrlList[position],
+                    voteCount = voteCount[position].toInt(),
+                    overView = overView[position]
+                )
+                (context as MainActivity).lifecycleScope.launch {
+                    AppDatabase.getDatabase(context).favoriteMovieDao().insert(movie)
+                    holder.favoriteIcon.setImageResource(R.drawable.ic_baseline_star_24)
+                }
+            }
+        }
+    }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
         val view = if (isGridView) {
             LayoutInflater.from(parent.context).inflate(R.layout.image_container2, parent, false)
@@ -46,63 +118,9 @@ class ImageAdapter(
     }
 
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
-//        Log.e("MovieDetailViewModel", "Error fetching movie details")
-        val idMovie = listId[position]
-        holder.itemView.setOnClickListener {
-            clickListener(idMovie)
-        }
-        val imageUrl = "https://image.tmdb.org/t/p/w500" + imageUrlList[position]
-        Glide.with(holder.imageView.context)
-            .load(imageUrl)
-            .into(holder.imageView)
-        val nameMovie = nameMovie[position]
-        if (nameMovie.length > 20 && isGridView) {
-            holder.nameMovie.text = nameMovie.substring(0, 15) + "..."
-        } else {
-            holder.nameMovie.text = nameMovie
-        }
-        val voteCount = voteCount[position]
-        val overView = overView[position]
-        if(isGridView) {
-            holder.voteCount.text = "Lượt xem: " + voteCount
-        }else{
-            holder.voteCount.text = if(overView.length<100) overView else overView.substring(0, 95) + "..."
-        }
-        // Check favoriteMovie
-        var isFavorite = false
-        runBlocking {
-            isFavorite = AppDatabase.getDatabase(context).favoriteMovieDao().isFavoriteMovie(listId[position])
-        }
-        if (isFavorite) {
-            holder.favoriteIcon.setImageResource(R.drawable.ic_baseline_star_24)
-        } else {
-            holder.favoriteIcon.setImageResource(R.drawable.ic_baseline_star_border_24)
-        }
-
-        holder.favoriteIcon.setOnClickListener {
-            if (isFavorite) {
-                (context as MainActivity).lifecycleScope.launch {
-                    AppDatabase.getDatabase(context).favoriteMovieDao().deleteById(listId[position])
-                    holder.favoriteIcon.setImageResource(R.drawable.ic_baseline_star_border_24)
-                    isFavorite = false
-                    return@launch
-                }
-            } else {
-                // Save Room
-                val movie = FavoriteMovie(
-                    id = listId[position],
-                    title = nameMovie,
-                    posterPath = imageUrl,
-                    voteCount = voteCount.toInt(),
-                    overView = overView
-                )
-                (context as MainActivity).lifecycleScope.launch {
-                    AppDatabase.getDatabase(context).favoriteMovieDao().insert(movie)
-                    holder.favoriteIcon.setImageResource(R.drawable.ic_baseline_star_24)
-                    isFavorite = true
-                }
-            }
-        }
+        Log.d("ImageAdapter", "position: $position")
+        val eventHandler = EventHandler(holder, position)
+        eventHandler.bind()
     }
 
     override fun getItemCount(): Int {
