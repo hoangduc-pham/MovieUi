@@ -2,7 +2,7 @@
 xmlns:tools="http://schemas.android.com/tools"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
-tools:context="com.hoangpd15.smartmovie.ui.homeScreen.allMovieScreen.TopRatedFragment">
+tools:context="com.hoangpd15.smartmovie.ui.homeScreen.typeMovieScreen.TopRatedFragment">
     <ProgressBar
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"

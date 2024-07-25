@@ -26,16 +26,15 @@ import com.hoangpd15.smartmovie.ui.UiStateAllMovie
 import com.hoangpd15.smartmovie.ui.homeScreen.HomeFragmentDirections
 
 
-class MoviesFragment : Fragment() {
+class MoviesFragment(private val moveToTab: (Int) -> Unit) : Fragment() {
     private var _binding: FragmentMoviesBinding? = null
     private val binding get() = _binding!!
     private lateinit var recyclerViews: List<RecyclerView>
     private lateinit var gridLayoutManagers: List<GridLayoutManager>
     private lateinit var linearLayoutManagers: List<LinearLayoutManager>
-    private lateinit var textTitles: List<TextView>
+    private lateinit var textTitles: List<View>
     private lateinit var adapter: ImageAdapter
     private var isSwitch: Boolean = false
-    private var listMovie: List<Movie> = emptyList()
 
     private val moviesViewModel: MoviesViewModel by viewModels()
 
@@ -56,6 +55,12 @@ class MoviesFragment : Fragment() {
     }
 
     private fun initRecyclerViewLayoutManagers() {
+        val clickListener = { tabIndex: Int -> moveToTab(tabIndex) }
+        binding.viewAllPopular.setOnClickListener { clickListener(1) }
+        binding.viewAllTopRated.setOnClickListener { clickListener(2) }
+        binding.viewAllNowPlaying.setOnClickListener { clickListener(3) }
+        binding.viewAllUpComing.setOnClickListener { clickListener(4) }
+
         textTitles = listOf(
             binding.textPopular,
             binding.textTopRated,
@@ -123,8 +128,6 @@ class MoviesFragment : Fragment() {
             is UiStateAllMovie.Error -> {
                 loadingIndicator.visibility = View.GONE
                 recyclerView.visibility = View.GONE
-                // Handle the error
-                // Toast.makeText(context, uiState.message, Toast.LENGTH_SHORT).show()
             }
         }
 

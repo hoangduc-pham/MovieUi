@@ -26,14 +26,27 @@
                 android:orientation="vertical"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
-                <TextView
-                    android:visibility="gone"
+                <LinearLayout
                     android:id="@+id/textPopular"
+                    android:visibility="gone"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                <TextView
                     android:text="Popular"
                     android:textSize="20sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
                 </TextView>
+                    <TextView
+                        android:gravity="end"
+                        android:id="@+id/viewAllPopular"
+                        android:text="See All >  "
+                        android:textSize="18sp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                    </TextView>
+                </LinearLayout>
             <androidx.recyclerview.widget.RecyclerView
                 android:layout_gravity="center"
                 android:id="@+id/recyclerViewPopular"
@@ -45,14 +58,27 @@
             android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
-            <TextView
-                android:id="@+id/textTopRated"
+            <LinearLayout
                 android:visibility="gone"
+                android:id="@+id/textTopRated"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            <TextView
                 android:text="Top Rated"
                 android:textSize="20sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
             </TextView>
+            <TextView
+                android:gravity="end"
+                android:id="@+id/viewAllTopRated"
+                android:text="See All >  "
+                android:textSize="18sp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            </TextView>
+            </LinearLayout>
             <androidx.recyclerview.widget.RecyclerView
                 android:layout_gravity="center"
                 android:id="@+id/recyclerViewTopRated"
@@ -64,14 +90,27 @@
             android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
-            <TextView
-                android:id="@+id/textNowPlaying"
-                android:text="Now Playing"
+            <LinearLayout
                 android:visibility="gone"
+                android:id="@+id/textNowPlaying"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            <TextView
+                android:text="Now Playing"
                 android:textSize="20sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
             </TextView>
+            <TextView
+                android:gravity="end"
+                android:id="@+id/viewAllNowPlaying"
+                android:text="See All >  "
+                android:textSize="18sp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            </TextView>
+            </LinearLayout>
             <androidx.recyclerview.widget.RecyclerView
                 android:layout_gravity="center"
                 android:id="@+id/recyclerViewNowPlaying"
@@ -83,14 +122,27 @@
             android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
-            <TextView
-                android:id="@+id/textUpComing"
+            <LinearLayout
                 android:visibility="gone"
+                android:id="@+id/textUpComing"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            <TextView
                 android:text="UpComing"
                 android:textSize="20sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
             </TextView>
+            <TextView
+                android:gravity="end"
+                android:id="@+id/viewAllUpComing"
+                android:text="See All >  "
+                android:textSize="18sp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            </TextView>
+            </LinearLayout>
             <androidx.recyclerview.widget.RecyclerView
                 android:layout_gravity="center"
                 android:id="@+id/recyclerViewUpComing"

@@ -8,23 +8,17 @@ import android.view.ViewGroup
 import com.google.android.material.tabs.TabLayoutMediator
 import com.hoangpd15.smartmovie.adapter.ViewPagerAdapter
 import com.hoangpd15.smartmovie.databinding.FragmentHomeBinding
-import com.hoangpd15.smartmovie.ui.homeScreen.allMovieScreen.NowPlayingFragment
-import com.hoangpd15.smartmovie.ui.homeScreen.allMovieScreen.PopularFragment
-import com.hoangpd15.smartmovie.ui.homeScreen.allMovieScreen.TopRatedFragment
-import com.hoangpd15.smartmovie.ui.homeScreen.allMovieScreen.TypeFragment
+import com.hoangpd15.smartmovie.ui.homeScreen.typeMovieScreen.TypeFragment
 import com.hoangpd15.smartmovie.ui.homeScreen.movieScreen.MoviesFragment
 
 class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
-    private val movieFragment = MoviesFragment()
+    private val movieFragment = MoviesFragment { page -> binding.viewPager.currentItem = page }
     private val popularFragment = TypeFragment("popular")
     private val topRatedFragment = TypeFragment("topRate")
     private val nowPlayingFragment = TypeFragment("nowPlaying")
     private val upComingFragment = TypeFragment("upComing")
-//    private val topRatedFragment = TopRatedFragment()
-//    private val nowPlayingFragment = NowPlayingFragment()
-//    private val upComingFragment = UpComingFragment()
     private val fragments: List<Fragment> = listOf(
         movieFragment,
         popularFragment,
@@ -50,19 +44,22 @@ class HomeFragment : Fragment() {
 
         binding.viewPager.adapter = ViewPagerAdapter(this, fragments)
 
+
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
             tab.text = titles[position]
         }.attach()
     }
+
     private fun initSwitch(view: View) {
         binding.switchView.setOnCheckedChangeListener { _, isSwitch ->
-               movieFragment.setSwitch(isSwitch)
-               popularFragment.setSwitch(isSwitch)
-               nowPlayingFragment.setSwitch(isSwitch)
-               topRatedFragment.setSwitch(isSwitch)
-               upComingFragment.setSwitch(isSwitch)
+            movieFragment.setSwitch(isSwitch)
+            popularFragment.setSwitch(isSwitch)
+            nowPlayingFragment.setSwitch(isSwitch)
+            topRatedFragment.setSwitch(isSwitch)
+            upComingFragment.setSwitch(isSwitch)
         }
     }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

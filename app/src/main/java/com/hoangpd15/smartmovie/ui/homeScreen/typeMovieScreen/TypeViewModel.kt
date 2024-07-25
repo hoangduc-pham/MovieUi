@@ -1,4 +1,4 @@
-package com.hoangpd15.smartmovie.ui.homeScreen.allMovieScreen
+package com.hoangpd15.smartmovie.ui.homeScreen.typeMovieScreen
 
 import com.hoangpd15.smartmovie.model.Movie
 import com.hoangpd15.smartmovie.model.dataRemote.RetrofitInstance
