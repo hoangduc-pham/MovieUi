@@ -4,30 +4,19 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hoangpd15.smartmovie.doumain.MovieRepository
 import com.hoangpd15.smartmovie.model.Movie
 import com.hoangpd15.smartmovie.model.dataRemote.RetrofitInstance
 import com.hoangpd15.smartmovie.ui.UiState
 import com.hoangpd15.smartmovie.ui.UiStateAllMovie
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class MoviesViewModel : ViewModel() {
-    private val popularMoviesApi = RetrofitInstance.apiMoviePopular
-    private val topRateMoviesApi = RetrofitInstance.apiMovieTopRate
-    private val nowPlayingMoviesApi = RetrofitInstance.apiMovieNowPlaying
-    private val upComingMoviesApi = RetrofitInstance.apiMovieUpComing
-
-    //    val popularMovies = MutableLiveData<List<Movie>>()
-//    val topRatedMovies = MutableLiveData<List<Movie>>()
-//    val nowPlayingMovies = MutableLiveData<List<Movie>>()
-//    val upComingMovies = MutableLiveData<List<Movie>>()
-//    private val errorMessage = MutableLiveData<String>()
-//
-//
-//    private val _isLoading = MutableLiveData<Boolean>()
-//    val isLoading: LiveData<Boolean> get() = _isLoading
-//
+@HiltViewModel
+class MoviesViewModel @Inject constructor(private val repository: MovieRepository) : ViewModel() {
     private val _textPopular = MutableLiveData<Boolean>()
     val textPopular: LiveData<Boolean> get() = _textPopular
 
@@ -69,7 +58,7 @@ class MoviesViewModel : ViewModel() {
             _textPopular.postValue(false)
             _uiStatePopular.value = UiStateAllMovie.Loading
             try {
-                val movies = popularMoviesApi.getPopularMovies(1).results
+                val movies = repository.getPopularMovies(1).results
                 _uiStatePopular.value = UiStateAllMovie.Success(movies, UiStateAllMovie.MovieType.POPULAR)
                 _textPopular.postValue(true)
             } catch (e: Exception) {
@@ -83,7 +72,7 @@ class MoviesViewModel : ViewModel() {
             _textTopRated.postValue(false)
             _uiStateTopRated.value = UiStateAllMovie.Loading
             try {
-                val movies = topRateMoviesApi.getTopRateMovies(1).results
+                val movies = repository.getTopRateMovies(1).results
                 _uiStateTopRated.value = UiStateAllMovie.Success(movies, UiStateAllMovie.MovieType.TOP_RATED)
                 _textTopRated.postValue(true)
             } catch (e: Exception) {
@@ -97,7 +86,7 @@ class MoviesViewModel : ViewModel() {
             _textUpComing.postValue(false)
             _uiStateUpComing.value = UiStateAllMovie.Loading
             try {
-                val movies = upComingMoviesApi.getUpComingMovies(1).results
+                val movies = repository.getUpComingMovies(1).results
                 _uiStateUpComing.value = UiStateAllMovie.Success(movies, UiStateAllMovie.MovieType.UPCOMING)
                 _textUpComing.postValue(true)
             } catch (e: Exception) {
@@ -112,7 +101,7 @@ class MoviesViewModel : ViewModel() {
             _uiStateNowPlaying.value = UiStateAllMovie.Loading
             try {
                 val movies =
-                    nowPlayingMoviesApi.getNowPlayingMovies(1).results
+                    repository.getNowPlayingMovies(1).results
                 _uiStateNowPlaying.value = UiStateAllMovie.Success(movies, UiStateAllMovie.MovieType.NOW_PLAYING)
                 _textNowPlaying.postValue(true)
             } catch (e: Exception) {

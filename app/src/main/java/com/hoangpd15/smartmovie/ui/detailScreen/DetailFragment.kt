@@ -31,7 +31,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.hoangpd15.smartmovie.R
 import com.hoangpd15.smartmovie.ui.ui.theme.Movie_AssTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class DetailFragment : Fragment() {
     private val movieDetailViewModel: MovieDetailViewModel by viewModels()
     private val args: DetailFragmentArgs by navArgs()

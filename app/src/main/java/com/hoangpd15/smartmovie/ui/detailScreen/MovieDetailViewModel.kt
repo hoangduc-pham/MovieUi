@@ -10,9 +10,12 @@ import com.hoangpd15.smartmovie.model.GenresMovie
 import com.hoangpd15.smartmovie.model.Language
 import com.hoangpd15.smartmovie.model.MovieDetailResponse
 import com.hoangpd15.smartmovie.model.dataRemote.RetrofitInstance
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class MovieDetailViewModel : ViewModel() {
+@HiltViewModel
+class MovieDetailViewModel @Inject constructor() : ViewModel() {
 
     private val _movieDetail = MutableLiveData<MovieDetailResponse>()
     private val _language = MutableLiveData<List<Language>>()

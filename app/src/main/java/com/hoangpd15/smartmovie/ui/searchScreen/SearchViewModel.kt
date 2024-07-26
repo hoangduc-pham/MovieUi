@@ -1,33 +1,32 @@
 package com.hoangpd15.smartmovie.ui.searchScreen
 
 import androidx.lifecycle.*
+import com.hoangpd15.smartmovie.doumain.MovieRepository
 import com.hoangpd15.smartmovie.model.Movie
 import com.hoangpd15.smartmovie.model.dataRemote.RetrofitInstance
+import com.hoangpd15.smartmovie.ui.UiState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class SearchViewModel : ViewModel() {
-    private val _searchMovies = MutableLiveData<List<Movie>>()
-    val searchMovies: LiveData<List<Movie>> get() = _searchMovies
-
-
+@HiltViewModel
+class SearchViewModel @Inject constructor(private val repository: MovieRepository) : ViewModel() {
     private val _noFindMovie = MutableLiveData<Boolean>()
     val noFindMovie: LiveData<Boolean> get() = _noFindMovie
 
-    private val _isLoading = MutableLiveData<Boolean>()
-    val isLoading: LiveData<Boolean> get() = _isLoading
+    private val _uiState = MutableLiveData<UiState>()
+    val uiState: LiveData<UiState> get() = _uiState
 
     fun searchMovies(query: String) {
         viewModelScope.launch {
             _noFindMovie.postValue(false)
-            _isLoading.postValue(true)
+            _uiState.value = UiState.Loading
             try {
-                val response = RetrofitInstance.apiMovieSearch.searchMovies(query)
-                _searchMovies.postValue(response.results)
+                val response = repository.getSearchMovies(query)
+                _uiState.value = UiState.Success(response.results)
             } catch (e: Exception) {
-                _searchMovies.postValue(emptyList())
+                _uiState.value = UiState.Error(e.message ?: "Unknown error")
                 _noFindMovie.postValue(true)
-            } finally {
-                _isLoading.postValue(false)
             }
         }
     }

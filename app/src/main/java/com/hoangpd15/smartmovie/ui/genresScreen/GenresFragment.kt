@@ -18,7 +18,9 @@ import com.hoangpd15.smartmovie.databinding.FragmentGenresBinding
 import com.hoangpd15.smartmovie.databinding.FragmentSearchBinding
 import com.hoangpd15.smartmovie.model.Genres
 import com.hoangpd15.smartmovie.ui.UiState
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class GenresFragment : Fragment() {
     private lateinit var adapter: ListGenresAdapter
     private var _binding: FragmentGenresBinding? = null

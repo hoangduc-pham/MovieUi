@@ -3,37 +3,36 @@ package com.hoangpd15.smartmovie.ui.homeScreen.typeMovieScreen
 import com.hoangpd15.smartmovie.model.Movie
 import com.hoangpd15.smartmovie.model.dataRemote.RetrofitInstance
 import com.hoangpd15.smartmovie.base.BaseViewModel
+import com.hoangpd15.smartmovie.doumain.MovieRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class NowPlayingViewModel : BaseViewModel() {
+@HiltViewModel
+class NowPlayingViewModel @Inject constructor(private val repository: MovieRepository) : BaseViewModel() {
     override suspend fun fetchMoviesFromApi(page: Int): List<Movie> {
-        return withContext(Dispatchers.IO) {
-            RetrofitInstance.apiMovieNowPlaying.getNowPlayingMovies(page).results
-        }
+        return repository.getNowPlayingMovies(page).results
     }
 }
 
-class PopularViewModel : BaseViewModel() {
+@HiltViewModel
+class PopularViewModel @Inject constructor(private val repository: MovieRepository) : BaseViewModel() {
     override suspend fun fetchMoviesFromApi(page: Int): List<Movie> {
-        return withContext(Dispatchers.IO) {
-            RetrofitInstance.apiMoviePopular.getPopularMovies(page).results
-        }
+        return repository.getPopularMovies(page).results
     }
 }
 
-class TopRatedViewModel : BaseViewModel() {
+@HiltViewModel
+class TopRatedViewModel @Inject constructor(private val repository: MovieRepository) : BaseViewModel() {
     override suspend fun fetchMoviesFromApi(page: Int): List<Movie> {
-        return withContext(Dispatchers.IO) {
-            RetrofitInstance.apiMovieTopRate.getTopRateMovies(page).results
-        }
+        return repository.getTopRateMovies(page).results
     }
 }
 
-class UpComingViewModel : BaseViewModel() {
+@HiltViewModel
+class UpComingViewModel @Inject constructor(private val repository: MovieRepository) : BaseViewModel() {
     override suspend fun fetchMoviesFromApi(page: Int): List<Movie> {
-        return withContext(Dispatchers.IO) {
-            RetrofitInstance.apiMovieUpComing.getUpComingMovies(page).results
-        }
+        return repository.getUpComingMovies(page).results
     }
 }

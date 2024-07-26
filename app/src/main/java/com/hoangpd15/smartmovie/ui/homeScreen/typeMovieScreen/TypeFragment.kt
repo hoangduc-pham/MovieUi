@@ -18,7 +18,9 @@ import com.hoangpd15.smartmovie.databinding.FragmentUpComingBinding
 import com.hoangpd15.smartmovie.model.Movie
 import com.hoangpd15.smartmovie.ui.UiState
 import com.hoangpd15.smartmovie.ui.homeScreen.HomeFragmentDirections
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class TypeFragment(type: String) : Fragment() {
     private var _binding: FragmentUpComingBinding? = null
     private val binding get() = _binding!!
@@ -89,7 +91,7 @@ class TypeFragment(type: String) : Fragment() {
                 is UiState.Success<*> -> {
                     binding.icLoading.visibility = View.GONE
                     binding.progressBar.visibility = View.GONE
-                    val movies = uiState.list as List<Movie>
+                    val movies = uiState.list as? List<Movie> ?: emptyList()
                     setupAdapter(movies)
                 }
 

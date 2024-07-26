@@ -25,8 +25,9 @@ import com.hoangpd15.smartmovie.model.Movie
 import com.hoangpd15.smartmovie.ui.UiState
 import com.hoangpd15.smartmovie.ui.UiStateAllMovie
 import com.hoangpd15.smartmovie.ui.homeScreen.HomeFragmentDirections
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class MoviesFragment(private val moveToTab: (Int) -> Unit) : Fragment() {
     private var _binding: FragmentMoviesBinding? = null
     private val binding get() = _binding!!
@@ -36,9 +37,18 @@ class MoviesFragment(private val moveToTab: (Int) -> Unit) : Fragment() {
     private lateinit var textTitles: List<View>
     private lateinit var adapter: ImageAdapter
     private var isSwitch: Boolean = false
+    private var isDialogShowing: Boolean = false
 
     private val moviesViewModel: MoviesViewModel by viewModels()
-
+    private val dialog by lazy {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Load data failed")
+            .setMessage("Can't get data from server, please try again later.")
+            .setPositiveButton("Reload") { _, _ ->
+                moviesViewModel.refreshMovies()
+                isDialogShowing = false
+            }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -129,9 +139,11 @@ class MoviesFragment(private val moveToTab: (Int) -> Unit) : Fragment() {
             is UiStateAllMovie.Error -> {
                 loadingIndicator.visibility = View.GONE
                 recyclerView.visibility = View.GONE
-                showErrorDialog()
-            }
-        }
+                if (!isDialogShowing) {
+                    dialog.show()
+                    isDialogShowing = true
+                }
+        }}
 
         val titleObservers = listOf(
             moviesViewModel.textPopular to textTitles[0],
@@ -144,14 +156,6 @@ class MoviesFragment(private val moveToTab: (Int) -> Unit) : Fragment() {
                 title.visibility = if (isVisible) View.VISIBLE else View.GONE
             })
         }
-    }
-    private fun showErrorDialog() {
-        AlertDialog.Builder(requireContext())
-            .setTitle("Load data failed")
-            .setMessage("Can't get data from server, please try again later.")
-            .setPositiveButton("Reload") { _, _ ->
-                moviesViewModel.refreshMovies()
-            }.show()
     }
     private fun setupAdapter(movies: List<Movie>, recyclerView: RecyclerView) {
         val limitedMovies = movies.take(4)

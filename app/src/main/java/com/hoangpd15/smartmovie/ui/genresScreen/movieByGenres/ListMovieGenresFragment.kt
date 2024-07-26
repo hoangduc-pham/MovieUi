@@ -21,7 +21,9 @@ import com.hoangpd15.smartmovie.databinding.FragmentListMovieGenresBinding
 import com.hoangpd15.smartmovie.databinding.FragmentSearchBinding
 import com.hoangpd15.smartmovie.model.Movie
 import com.hoangpd15.smartmovie.ui.UiState
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ListMovieGenresFragment : Fragment() {
     private var _binding: FragmentListMovieGenresBinding? = null
     private val binding get() = _binding!!

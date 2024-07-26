@@ -6,12 +6,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hoangpd15.smartmovie.model.Movie
 import com.hoangpd15.smartmovie.ui.UiState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-abstract class BaseViewModel : ViewModel() {
+@HiltViewModel
+open class BaseViewModel @Inject constructor() : ViewModel() {
 
     private val _uiState = MutableLiveData<UiState>()
     val uiState: LiveData<UiState> get() = _uiState
@@ -36,9 +39,7 @@ abstract class BaseViewModel : ViewModel() {
 
     private suspend fun loadMoviesFromApi(page: Int) {
         try {
-            val movies = withContext(Dispatchers.IO) {
-                fetchMoviesFromApi(page)
-            }
+            val movies = fetchMoviesFromApi(page)
             currentMovies = (currentMovies + movies).distinct()
             _uiState.value = UiState.Success(currentMovies)
             currentPage++
@@ -47,5 +48,5 @@ abstract class BaseViewModel : ViewModel() {
         }
     }
 
-    abstract suspend fun fetchMoviesFromApi(page: Int): List<Movie>
+     open suspend fun fetchMoviesFromApi(page: Int): List<Movie> = emptyList()
 }

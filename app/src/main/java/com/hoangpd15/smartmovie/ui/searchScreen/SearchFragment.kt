@@ -21,9 +21,12 @@ import com.hoangpd15.smartmovie.R
 import com.hoangpd15.smartmovie.adapter.ImageAdapterSearch
 import com.hoangpd15.smartmovie.adapter.ListGenresAdapter
 import com.hoangpd15.smartmovie.databinding.FragmentSearchBinding
+import com.hoangpd15.smartmovie.model.Genres
 import com.hoangpd15.smartmovie.model.Movie
+import com.hoangpd15.smartmovie.ui.UiState
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class SearchFragment : Fragment() {
     private lateinit var adapter: ImageAdapterSearch
     private var _binding: FragmentSearchBinding? = null
@@ -40,12 +43,12 @@ class SearchFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        clickSearch(view)
+        clickSearch()
         initRecyclerView()
         observeViewModel()
     }
 
-    private fun clickSearch(view: View) {
+    private fun clickSearch() {
         val performSearch = {
             val query = binding.searchEditText.text.toString()
             if (query.isNotEmpty()) {
@@ -81,12 +84,24 @@ class SearchFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        searchViewModel.searchMovies.observe(viewLifecycleOwner, Observer { searchMovies ->
-            setupAdapter(searchMovies)
-        })
-        searchViewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading ->
-            binding.icLoading.visibility = if (isLoading) View.VISIBLE else View.GONE
-        })
+        searchViewModel.uiState.observe(viewLifecycleOwner, Observer { uiState ->
+            when (uiState) {
+                is UiState.Loading -> {
+                    binding.icLoading.visibility = View.VISIBLE
+                }
+
+                is UiState.Success<*> -> {
+                    binding.icLoading.visibility = View.GONE
+                    setupAdapter(uiState.list as List<Movie>)
+                }
+
+                is UiState.Error -> {
+                    binding.icLoading.visibility = View.GONE
+                }
+                is UiState.LoadMore -> {
+                    TODO()
+                }
+            }})
         searchViewModel.noFindMovie.observe(viewLifecycleOwner, Observer { noFindMovie ->
             binding.noFindMovie.visibility = if (noFindMovie) View.VISIBLE else View.GONE
         })

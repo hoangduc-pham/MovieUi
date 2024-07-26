@@ -10,7 +10,9 @@ import com.hoangpd15.smartmovie.adapter.ViewPagerAdapter
 import com.hoangpd15.smartmovie.databinding.FragmentHomeBinding
 import com.hoangpd15.smartmovie.ui.homeScreen.typeMovieScreen.TypeFragment
 import com.hoangpd15.smartmovie.ui.homeScreen.movieScreen.MoviesFragment
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
