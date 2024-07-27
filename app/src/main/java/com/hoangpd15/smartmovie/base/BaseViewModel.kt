@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.hoangpd15.smartmovie.model.Movie
 import com.hoangpd15.smartmovie.ui.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
