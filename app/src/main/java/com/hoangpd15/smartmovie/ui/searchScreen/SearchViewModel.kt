@@ -1,16 +1,15 @@
 package com.hoangpd15.smartmovie.ui.searchScreen
 
 import androidx.lifecycle.*
-import com.hoangpd15.smartmovie.doumain.MovieRepository
-import com.hoangpd15.smartmovie.model.Movie
-import com.hoangpd15.smartmovie.model.dataRemote.RetrofitInstance
+import com.example.domain.GetSearchMoviesUseCase
 import com.hoangpd15.smartmovie.ui.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SearchViewModel @Inject constructor(private val repository: MovieRepository) : ViewModel() {
+class SearchViewModel @Inject constructor(
+    private val searchUseCase: GetSearchMoviesUseCase) : ViewModel() {
     private val _noFindMovie = MutableLiveData<Boolean>()
     val noFindMovie: LiveData<Boolean> get() = _noFindMovie
 
@@ -22,7 +21,7 @@ class SearchViewModel @Inject constructor(private val repository: MovieRepositor
             _noFindMovie.postValue(false)
             _uiState.value = UiState.Loading
             try {
-                val response = repository.getSearchMovies(query)
+                val response = searchUseCase(query)
                 _uiState.value = UiState.Success(response.results)
             } catch (e: Exception) {
                 _uiState.value = UiState.Error(e.message ?: "Unknown error")

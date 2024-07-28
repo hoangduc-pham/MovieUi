@@ -5,18 +5,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.appbar.MaterialToolbar
-import com.hoangpd15.smartmovie.R
+import com.example.domain.entities.Genres
 import com.hoangpd15.smartmovie.adapter.ListGenresAdapter
 import com.hoangpd15.smartmovie.databinding.FragmentGenresBinding
-import com.hoangpd15.smartmovie.databinding.FragmentSearchBinding
-import com.hoangpd15.smartmovie.model.Genres
 import com.hoangpd15.smartmovie.ui.UiState
 import dagger.hilt.android.AndroidEntryPoint
 

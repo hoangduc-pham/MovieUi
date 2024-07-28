@@ -1,9 +1,9 @@
-package com.hoangpd15.smartmovie.model
+package com.example.data.model
 
 data class MovieResponse(
-    val results: List<Movie>
+    val results: List<MovieDto>
 )
-data class Movie(
+data class MovieDto(
     val id: Int,
     val posterPath: String,
     val title: String,

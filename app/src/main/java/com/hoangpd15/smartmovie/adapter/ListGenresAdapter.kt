@@ -8,7 +8,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.hoangpd15.smartmovie.R
-import com.hoangpd15.smartmovie.adapter.ImageAdapterSearch.ImageViewHolder
 
 class ListGenresAdapter(
     private val nameGenres: List<String>,

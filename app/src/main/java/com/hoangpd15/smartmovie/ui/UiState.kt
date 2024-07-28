@@ -1,6 +1,6 @@
 package com.hoangpd15.smartmovie.ui
 
-import com.hoangpd15.smartmovie.model.Movie
+import com.example.domain.entities.Movie
 
 sealed class UiState {
     data object Loading : UiState()

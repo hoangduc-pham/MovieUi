@@ -7,22 +7,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.ProgressBar
-import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.hoangpd15.smartmovie.R
+import com.example.domain.entities.Movie
 import com.hoangpd15.smartmovie.adapter.ImageAdapterSearch
-import com.hoangpd15.smartmovie.adapter.ListGenresAdapter
 import com.hoangpd15.smartmovie.databinding.FragmentSearchBinding
-import com.hoangpd15.smartmovie.model.Genres
-import com.hoangpd15.smartmovie.model.Movie
 import com.hoangpd15.smartmovie.ui.UiState
 import dagger.hilt.android.AndroidEntryPoint
 

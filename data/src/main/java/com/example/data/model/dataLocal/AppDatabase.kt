@@ -1,12 +1,12 @@
-package com.hoangpd15.smartmovie.model.dataLocal
+package com.example.data.model.dataLocal
 
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import android.content.Context
-import com.hoangpd15.smartmovie.model.FavoriteMovie
+import com.example.domain.entities.FavoriteMovieEntity
 
-@Database(entities = [FavoriteMovie::class], version = 1)
+@Database(entities = [FavoriteMovieEntity::class], version = 1)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun favoriteMovieDao(): FavoriteMovieDao
 

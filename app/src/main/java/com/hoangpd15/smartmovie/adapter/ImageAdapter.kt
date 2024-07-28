@@ -10,15 +10,18 @@ import android.widget.TextView
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.data.model.dataLocal.AppDatabase
+import com.example.domain.InsertFavoriteMovieUseCase
+import com.example.domain.entities.FavoriteMovieEntity
 import com.hoangpd15.smartmovie.R
-import com.hoangpd15.smartmovie.model.dataLocal.AppDatabase
-import com.hoangpd15.smartmovie.model.FavoriteMovie
 import com.hoangpd15.smartmovie.ui.MainActivity
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 
 class ImageAdapter(
+    private val deleteFavoriteMovie: (Int) -> Unit,
+    private val insertFavoriteMovie:(movie: FavoriteMovieEntity) -> Unit,
     private var imageUrlList: List<String>,
     private var listId: List<Int>,
     private var nameMovie: List<String>,
@@ -89,22 +92,18 @@ class ImageAdapter(
 
         private fun handleFavoriteClick(isFavorite: Boolean) {
             if (isFavorite) {
-                (context as MainActivity).lifecycleScope.launch {
-                    AppDatabase.getDatabase(context).favoriteMovieDao().deleteById(listId[position])
+                    deleteFavoriteMovie(listId[position])
                     holder.favoriteIcon.setImageResource(R.drawable.ic_baseline_star_border_24)
-                }
             } else {
-                val movie = FavoriteMovie(
+                val movie = FavoriteMovieEntity(
                     id = listId[position],
                     title = nameMovie[position],
                     posterPath = "https://image.tmdb.org/t/p/w500" + imageUrlList[position],
                     voteCount = voteCount[position].toInt(),
                     overView = overView[position]
                 )
-                (context as MainActivity).lifecycleScope.launch {
-                    AppDatabase.getDatabase(context).favoriteMovieDao().insert(movie)
+                    insertFavoriteMovie(movie)
                     holder.favoriteIcon.setImageResource(R.drawable.ic_baseline_star_24)
-                }
             }
         }
     }

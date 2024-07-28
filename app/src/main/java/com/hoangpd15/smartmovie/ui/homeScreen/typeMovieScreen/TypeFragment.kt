@@ -13,9 +13,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.domain.entities.Movie
 import com.hoangpd15.smartmovie.adapter.ImageAdapter
 import com.hoangpd15.smartmovie.databinding.FragmentUpComingBinding
-import com.hoangpd15.smartmovie.model.Movie
 import com.hoangpd15.smartmovie.ui.UiState
 import com.hoangpd15.smartmovie.ui.homeScreen.HomeFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
@@ -113,6 +113,8 @@ class TypeFragment(type: String) : Fragment() {
             adapter.updateData(imageUrlList, idList, nameMovieList, voteCountList, overView)
         } else {
             adapter = ImageAdapter(
+                {id -> typeViewModel.deleteFavoriteMovie(id)},
+                {movie -> typeViewModel.insertFavoriteMovie(movie)},
                 imageUrlList,
                 idList,
                 nameMovieList,
@@ -135,6 +137,8 @@ class TypeFragment(type: String) : Fragment() {
         val overView = movieList.map { it.overview }
         val voteCountList = movieList.map { it.voteCount.toString() }
         adapter = ImageAdapter(
+            {id -> typeViewModel.deleteFavoriteMovie(id)},
+            {movie -> typeViewModel.insertFavoriteMovie(movie)},
             imageUrlList,
             idList,
             nameMovieList,

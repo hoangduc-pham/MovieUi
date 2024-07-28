@@ -110,21 +110,21 @@ fun MovieDetailScreen(
         }
     }
 }
-@Preview(showBackground = true)
-@Composable
-fun DetailScreenPreview() {
-    Movie_AssTheme {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
-        ) {
-            Scaffold(
-            ) { paddingValues ->
-                MovieDetailScreen(
-                    modifier = Modifier.padding(paddingValues),
-                    movieDetailViewModel = MovieDetailViewModel()
-                )
-            }
-        }
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun DetailScreenPreview() {
+//    Movie_AssTheme {
+//        Surface(
+//            modifier = Modifier.fillMaxSize(),
+//            color = MaterialTheme.colorScheme.background
+//        ) {
+//            Scaffold(
+//            ) { paddingValues ->
+//                MovieDetailScreen(
+//                    modifier = Modifier.padding(paddingValues),
+//                    movieDetailViewModel = MovieDetailViewModel()
+//                )
+//            }
+//        }
+//    }
+//}

@@ -1,4 +1,4 @@
-package com.hoangpd15.smartmovie.model.dataRemote
+package com.example.data.model.dataRemote
 
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.Gson

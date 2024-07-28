@@ -6,16 +6,9 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.hoangpd15.smartmovie.R
-import com.hoangpd15.smartmovie.adapter.ImageAdapter.ImageViewHolder
-import com.hoangpd15.smartmovie.model.FavoriteMovie
-import com.hoangpd15.smartmovie.model.dataLocal.AppDatabase
-import com.hoangpd15.smartmovie.ui.MainActivity
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 class ImageAdapterSearch(
     private val imageUrlList: List<String?>,

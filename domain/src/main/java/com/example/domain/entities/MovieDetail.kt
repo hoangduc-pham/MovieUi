@@ -1,6 +1,6 @@
-package com.hoangpd15.smartmovie.model
+package com.example.domain.entities
 
-data class MovieDetailResponse(
+data class MovieDetail(
     val id: Int,
     val posterPath: String,
     val overview: String,

@@ -1,6 +1,6 @@
-package com.hoangpd15.smartmovie.model
+package com.example.domain.entities
 
-data class GenresResponse(
+data class GenresMovies(
     val genres: List<Genres>
 )
 data class Genres(

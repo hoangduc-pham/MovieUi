@@ -1,6 +1,6 @@
-package com.hoangpd15.smartmovie.model
+package com.example.domain.entities
 
-data class CastMovieReponse (
+data class CastMovie (
     val cast: List<Cast>
 )
 

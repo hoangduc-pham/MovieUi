@@ -1,38 +1,54 @@
 package com.hoangpd15.smartmovie.ui.homeScreen.typeMovieScreen
-
-import com.hoangpd15.smartmovie.model.Movie
-import com.hoangpd15.smartmovie.model.dataRemote.RetrofitInstance
+import com.example.domain.DeleteFavoriteMovieUseCase
+import com.example.domain.GetNowPlayingMoviesUseCase
+import com.example.domain.GetPopularMoviesUseCase
+import com.example.domain.GetTopRateMoviesUseCase
+import com.example.domain.GetUpComingMoviesUseCase
+import com.example.domain.InsertFavoriteMovieUseCase
+import com.example.domain.entities.Movie
 import com.hoangpd15.smartmovie.base.BaseViewModel
-import com.hoangpd15.smartmovie.doumain.MovieRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
-
 @HiltViewModel
-class NowPlayingViewModel @Inject constructor(private val repository: MovieRepository) : BaseViewModel() {
+class NowPlayingViewModel @Inject constructor(
+    private val nowPlayingUseCase: GetNowPlayingMoviesUseCase,
+    private val deleteFavoriteMovieUseCase: DeleteFavoriteMovieUseCase,
+    private val insertFavoriteMovieUseCase: InsertFavoriteMovieUseCase,
+) : BaseViewModel(deleteFavoriteMovieUseCase,insertFavoriteMovieUseCase) {
     override suspend fun fetchMoviesFromApi(page: Int): List<Movie> {
-        return repository.getNowPlayingMovies(page).results
+        return nowPlayingUseCase(page).results
     }
 }
 
 @HiltViewModel
-class PopularViewModel @Inject constructor(private val repository: MovieRepository) : BaseViewModel() {
+class PopularViewModel @Inject constructor(
+    private val popularUseCase: GetPopularMoviesUseCase,
+    private val deleteFavoriteMovieUseCase: DeleteFavoriteMovieUseCase,
+    private val insertFavoriteMovieUseCase: InsertFavoriteMovieUseCase,
+) : BaseViewModel(deleteFavoriteMovieUseCase,insertFavoriteMovieUseCase) {
     override suspend fun fetchMoviesFromApi(page: Int): List<Movie> {
-        return repository.getPopularMovies(page).results
+        return popularUseCase(page).results
     }
 }
 
 @HiltViewModel
-class TopRatedViewModel @Inject constructor(private val repository: MovieRepository) : BaseViewModel() {
+class TopRatedViewModel @Inject constructor(
+    private val topRatedUseCase: GetTopRateMoviesUseCase,
+    private val deleteFavoriteMovieUseCase: DeleteFavoriteMovieUseCase,
+    private val insertFavoriteMovieUseCase: InsertFavoriteMovieUseCase,
+) : BaseViewModel(deleteFavoriteMovieUseCase,insertFavoriteMovieUseCase) {
     override suspend fun fetchMoviesFromApi(page: Int): List<Movie> {
-        return repository.getTopRateMovies(page).results
+        return topRatedUseCase(page).results
     }
 }
 
 @HiltViewModel
-class UpComingViewModel @Inject constructor(private val repository: MovieRepository) : BaseViewModel() {
+class UpComingViewModel @Inject constructor(
+    private val upComingUseCase: GetUpComingMoviesUseCase,
+    private val deleteFavoriteMovieUseCase: DeleteFavoriteMovieUseCase,
+    private val insertFavoriteMovieUseCase: InsertFavoriteMovieUseCase,
+) : BaseViewModel(deleteFavoriteMovieUseCase,insertFavoriteMovieUseCase) {
     override suspend fun fetchMoviesFromApi(page: Int): List<Movie> {
-        return repository.getUpComingMovies(page).results
+        return upComingUseCase(page).results
     }
 }
