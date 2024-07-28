@@ -9,7 +9,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
-    private val searchUseCase: GetSearchMoviesUseCase) : ViewModel() {
+    private val searchUseCase: GetSearchMoviesUseCase
+) : ViewModel() {
     private val _noFindMovie = MutableLiveData<Boolean>()
     val noFindMovie: LiveData<Boolean> get() = _noFindMovie
 

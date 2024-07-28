@@ -21,7 +21,7 @@ import kotlinx.coroutines.runBlocking
 
 class ImageAdapter(
     private val deleteFavoriteMovie: (Int) -> Unit,
-    private val insertFavoriteMovie:(movie: FavoriteMovieEntity) -> Unit,
+    private val insertFavoriteMovie: (movie: FavoriteMovieEntity) -> Unit,
     private var imageUrlList: List<String>,
     private var listId: List<Int>,
     private var nameMovie: List<String>,
@@ -29,7 +29,7 @@ class ImageAdapter(
     private var overView: List<String>,
     private var isGridView: Boolean,
     private val context: Context,
-    private val clickListener:(Int) -> Unit
+    private val clickListener: (Int) -> Unit
 ) : RecyclerView.Adapter<ImageAdapter.ImageViewHolder>() {
 
     class ImageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -38,6 +38,7 @@ class ImageAdapter(
         val voteCount: TextView = itemView.findViewById(R.id.voteCount)
         val favoriteIcon: ImageView = itemView.findViewById(R.id.favoriteIcon)
     }
+
     inner class EventHandler(
         private val holder: ImageViewHolder,
         private val position: Int
@@ -49,6 +50,7 @@ class ImageAdapter(
             setMovieDetails()
             setupFavoriteIcon()
         }
+
         private fun setupClickListener() {
             holder.itemView.setOnClickListener {
                 clickListener(listId[position])
@@ -73,13 +75,17 @@ class ImageAdapter(
                 "Lượt xem: ${voteCount[position]}"
             } else {
                 val overviewText = overView[position]
-                if (overviewText.length < 100) overviewText else overviewText.substring(0, 95) + "..."
+                if (overviewText.length < 100) overviewText else overviewText.substring(
+                    0,
+                    95
+                ) + "..."
             }
         }
 
         private fun setupFavoriteIcon() {
             val isFavorite = runBlocking {
-                AppDatabase.getDatabase(context).favoriteMovieDao().isFavoriteMovie(listId[position])
+                AppDatabase.getDatabase(context).favoriteMovieDao()
+                    .isFavoriteMovie(listId[position])
             }
             holder.favoriteIcon.setImageResource(
                 if (isFavorite) R.drawable.ic_baseline_star_24
@@ -92,8 +98,8 @@ class ImageAdapter(
 
         private fun handleFavoriteClick(isFavorite: Boolean) {
             if (isFavorite) {
-                    deleteFavoriteMovie(listId[position])
-                    holder.favoriteIcon.setImageResource(R.drawable.ic_baseline_star_border_24)
+                deleteFavoriteMovie(listId[position])
+                holder.favoriteIcon.setImageResource(R.drawable.ic_baseline_star_border_24)
             } else {
                 val movie = FavoriteMovieEntity(
                     id = listId[position],
@@ -102,15 +108,16 @@ class ImageAdapter(
                     voteCount = voteCount[position].toInt(),
                     overView = overView[position]
                 )
-                    insertFavoriteMovie(movie)
-                    holder.favoriteIcon.setImageResource(R.drawable.ic_baseline_star_24)
+                insertFavoriteMovie(movie)
+                holder.favoriteIcon.setImageResource(R.drawable.ic_baseline_star_24)
             }
         }
     }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
         val view = if (isGridView) {
             LayoutInflater.from(parent.context).inflate(R.layout.image_container2, parent, false)
-        } else  {
+        } else {
             LayoutInflater.from(parent.context).inflate(R.layout.image_container, parent, false)
         }
         return ImageViewHolder(view)
@@ -125,12 +132,18 @@ class ImageAdapter(
     override fun getItemCount(): Int {
         return imageUrlList.size
     }
-    fun updateData(newImageUrlList: List<String>, newIdList: List<Int>, newNameMovieList: List<String>, newVoteCountList: List<String>, newOverView: List<String>) {
+
+    fun updateData(
+        newImageUrlList: List<String>,
+        newIdList: List<Int>,
+        newNameMovieList: List<String>,
+        newVoteCountList: List<String>,
+        newOverView: List<String>
+    ) {
         imageUrlList = newImageUrlList
         listId = newIdList
         nameMovie = newNameMovieList
         voteCount = newVoteCountList
         overView = newOverView
-//        notifyDataSetChanged()
     }
 }

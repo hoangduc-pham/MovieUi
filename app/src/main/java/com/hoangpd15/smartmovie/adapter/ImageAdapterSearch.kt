@@ -15,7 +15,7 @@ class ImageAdapterSearch(
     private val nameMovie: List<String>,
     private val rate: List<Double>,
     private val idMovie: List<Int>,
-    private val clickListener:(Int) -> Unit
+    private val clickListener: (Int) -> Unit
 
 ) : RecyclerView.Adapter<ImageAdapterSearch.ImageViewHolder>() {
 
@@ -24,6 +24,7 @@ class ImageAdapterSearch(
         val nameMovie: TextView = itemView.findViewById(R.id.nameMovie)
         val ratingBar: RatingBar = itemView.findViewById(R.id.ratingBar)
     }
+
     inner class EventHandler(
         private val holder: ImageViewHolder,
         private val position: Int
@@ -35,6 +36,7 @@ class ImageAdapterSearch(
             setMovieDetails()
             setUpRatingbar()
         }
+
         private fun setupClickListener() {
             holder.itemView.setOnClickListener {
                 clickListener(idMovie[position])
@@ -56,24 +58,27 @@ class ImageAdapterSearch(
 
         private fun setMovieDetails() {
             val nameMovie = nameMovie[position]
-            if (nameMovie.length > 25 ) {
+            if (nameMovie.length > 25) {
                 holder.nameMovie.text = nameMovie.substring(0, 15) + "..."
             } else {
                 holder.nameMovie.text = nameMovie
             }
         }
+
         private fun setUpRatingbar() {
             val rate = rate[position]
-            holder.ratingBar.rating = (rate/2).toFloat()
+            holder.ratingBar.rating = (rate / 2).toFloat()
         }
     }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.image_container3, parent, false)
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.image_container3, parent, false)
         return ImageViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
-        val evenHandler = EventHandler(holder,position)
+        val evenHandler = EventHandler(holder, position)
         evenHandler.bind()
     }
 

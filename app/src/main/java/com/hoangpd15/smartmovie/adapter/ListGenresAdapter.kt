@@ -20,6 +20,7 @@ class ListGenresAdapter(
         val imageView: ImageView = itemView.findViewById(R.id.imageView)
         val nameGenres: TextView = itemView.findViewById(R.id.nameGenres)
     }
+
     inner class EventHandler(
         private val holder: ImageViewHolder,
         private val position: Int
@@ -30,11 +31,12 @@ class ListGenresAdapter(
             loadImage()
             setMovieDetails()
         }
+
         private fun setupClickListener() {
             val idGenre = idGenres[position]
             val nameGenres = nameGenres[position]
             holder.itemView.setOnClickListener {
-                clickListener(Pair(idGenre,nameGenres) )
+                clickListener(Pair(idGenre, nameGenres))
             }
         }
 
@@ -50,13 +52,15 @@ class ListGenresAdapter(
             holder.nameGenres.text = nameGenres
         }
     }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.image_container4, parent, false)
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.image_container4, parent, false)
         return ImageViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
-        val evenHandler = EventHandler(holder,position)
+        val evenHandler = EventHandler(holder, position)
         evenHandler.bind()
     }
 

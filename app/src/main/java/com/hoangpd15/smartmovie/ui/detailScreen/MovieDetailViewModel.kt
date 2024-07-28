@@ -17,22 +17,22 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MovieDetailViewModel @Inject constructor(
-    private val movieDetailUseCase : MovieDetailUseCase,
-    private val castMovieUseCase : CastMovieUseCase,
+    private val movieDetailUseCase: MovieDetailUseCase,
+    private val castMovieUseCase: CastMovieUseCase,
 ) : ViewModel() {
 
     private val _movieDetail = MutableLiveData<MovieDetail>()
     private val _language = MutableLiveData<List<Language>>()
+    private val _castMovie = MutableLiveData<List<Cast>>()
+    private val _isLoading = MutableLiveData<Boolean>()
     private val _movieDetailGenres = MutableLiveData<List<GenresMovie>>()
+
     val movieDetail: LiveData<MovieDetail> get() = _movieDetail
     val movieDetailGenres: LiveData<List<GenresMovie>> get() = _movieDetailGenres
     val language: LiveData<List<Language>> get() = _language
-
-    private val _castMovie = MutableLiveData<List<Cast>>()
     val castMovie: LiveData<List<Cast>> get() = _castMovie
-
-    private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> get() = _isLoading
+
     fun fetchMovieDetail(movieId: Int) {
         viewModelScope.launch {
             _isLoading.postValue(true)
@@ -44,8 +44,7 @@ class MovieDetailViewModel @Inject constructor(
 
                 val castResponse = castMovieUseCase(movieId)
                 _castMovie.postValue(castResponse.cast)
-            } catch (e: Exception) {
-//                Log.e("MovieDetailViewModel", "Error fetching movie details: ${e.message}")
+            } catch (_: Exception) {
             } finally {
                 _isLoading.postValue(false)
             }

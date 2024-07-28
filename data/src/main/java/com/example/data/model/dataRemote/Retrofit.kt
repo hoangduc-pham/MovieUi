@@ -13,6 +13,7 @@ object RetrofitInstance {
     private val gson: Gson = GsonBuilder()
         .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
         .create()
+
     private fun createRetrofitService(serviceClass: Class<*>): Any {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
@@ -20,6 +21,7 @@ object RetrofitInstance {
             .build()
             .create(serviceClass)
     }
+
     val apiMoviePopular: MoviePopularApi by lazy {
         createRetrofitService(MoviePopularApi::class.java) as MoviePopularApi
     }

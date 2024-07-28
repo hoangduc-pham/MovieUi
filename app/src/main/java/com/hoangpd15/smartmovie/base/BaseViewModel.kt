@@ -51,6 +51,7 @@ open class BaseViewModel @Inject constructor(
             _uiState.value = UiState.Error(e.message ?: "Unknown error")
         }
     }
+
     fun insertFavoriteMovie(movie: FavoriteMovieEntity) {
         viewModelScope.launch {
             insertFavoriteMovieUseCase(movie)
@@ -62,5 +63,6 @@ open class BaseViewModel @Inject constructor(
             deleteFavoriteMovieUseCase(movieId)
         }
     }
-     open suspend fun fetchMoviesFromApi(page: Int): List<Movie> = emptyList()
+
+    open suspend fun fetchMoviesFromApi(page: Int): List<Movie> = emptyList()
 }

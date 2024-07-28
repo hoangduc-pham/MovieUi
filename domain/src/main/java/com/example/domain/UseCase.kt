@@ -68,7 +68,7 @@ class InsertFavoriteMovieUseCase @Inject constructor(private val movieRepository
 }
 
 class GetAllFavoriteMoviesUseCase @Inject constructor(private val movieRepository: IMovieRepository) {
-    suspend operator fun invoke() : List<FavoriteMovieEntity>{
+    suspend operator fun invoke(): List<FavoriteMovieEntity> {
         return movieRepository.getAllFavoriteMovies()
     }
 }

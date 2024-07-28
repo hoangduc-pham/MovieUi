@@ -1,6 +1,5 @@
-package com.example.data.model.domain
+package com.example.data.model
 
-import com.example.data.model.MovieResponse
 import com.example.data.model.dataLocal.AppDatabase
 import com.example.data.model.dataRemote.RetrofitInstance
 import com.example.domain.IMovieRepository
@@ -13,7 +12,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class MovieRepositoryImpl @Inject constructor(private val appDatabase: AppDatabase): IMovieRepository {
+class MovieRepositoryImpl @Inject constructor(private val appDatabase: AppDatabase) :
+    IMovieRepository {
     override suspend fun getPopularMovies(page: Int): Movies {
         return withContext(Dispatchers.IO) {
             RetrofitInstance.apiMoviePopular.getPopularMovies(page)
@@ -73,16 +73,19 @@ class MovieRepositoryImpl @Inject constructor(private val appDatabase: AppDataba
             appDatabase.favoriteMovieDao().insert(movie)
         }
     }
+
     override suspend fun getDelete(movieId: Int) {
         return withContext(Dispatchers.IO) {
             appDatabase.favoriteMovieDao().deleteById(movieId)
         }
     }
+
     override suspend fun getAllFavoriteMovies(): List<FavoriteMovieEntity> {
         return withContext(Dispatchers.IO) {
             appDatabase.favoriteMovieDao().getAllFavoriteMovies()
         }
     }
+
     override suspend fun isFavoriteMovie(movieId: Int): Boolean {
         return withContext(Dispatchers.IO) {
             appDatabase.favoriteMovieDao().isFavoriteMovie(movieId)

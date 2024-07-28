@@ -137,7 +137,8 @@ class MoviesFragment(private val moveToTab: (Int) -> Unit) : Fragment() {
                     dialog.show()
                     isDialogShowing = true
                 }
-        }}
+            }
+        }
 
         val titleObservers = listOf(
             moviesViewModel.textPopular to textTitles[0],
@@ -151,6 +152,7 @@ class MoviesFragment(private val moveToTab: (Int) -> Unit) : Fragment() {
             })
         }
     }
+
     private fun setupAdapter(movies: List<Movie>, recyclerView: RecyclerView) {
         val limitedMovies = movies.take(4)
         val imageUrlList = limitedMovies.map { it.posterPath }
@@ -160,8 +162,8 @@ class MoviesFragment(private val moveToTab: (Int) -> Unit) : Fragment() {
         val voteCountList = limitedMovies.map { it.voteCount.toString() }
 
         adapter = ImageAdapter(
-            {id -> moviesViewModel.deleteFavoriteMovie(id)},
-            {movie -> moviesViewModel.insertFavoriteMovie(movie)},
+            { id -> moviesViewModel.deleteFavoriteMovie(id) },
+            { movie -> moviesViewModel.insertFavoriteMovie(movie) },
             imageUrlList,
             idList,
             nameMovieList,
@@ -182,9 +184,6 @@ class MoviesFragment(private val moveToTab: (Int) -> Unit) : Fragment() {
             moviesViewModel.refreshMovies()
             observeViewModel()
             initRecyclerViewLayoutManagers()
-//            recyclerViews.forEach { recyclerView ->
-//                setupAdapter(listMovie, recyclerView)
-//            }
         }
     }
 

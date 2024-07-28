@@ -1,10 +1,9 @@
 package com.example.data.model.di
+
 import android.content.Context
 import com.example.data.model.dataLocal.AppDatabase
-import com.example.data.model.dataLocal.FavoriteMovieDao
-import com.example.data.model.domain.MovieRepositoryImpl
+import com.example.data.model.MovieRepositoryImpl
 import com.example.domain.DeleteFavoriteMovieUseCase
-import com.example.domain.GetAllFavoriteMoviesUseCase
 import com.example.domain.GetNowPlayingMoviesUseCase
 import com.example.domain.GetPopularMoviesUseCase
 import com.example.domain.GetTopRateMoviesUseCase

@@ -73,7 +73,8 @@ class SearchFragment : Fragment() {
     }
 
     private fun initRecyclerView() {
-        binding.recyclerViewSearch.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+        binding.recyclerViewSearch.layoutManager =
+            LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
     }
 
     private fun observeViewModel() {
@@ -91,10 +92,12 @@ class SearchFragment : Fragment() {
                 is UiState.Error -> {
                     binding.icLoading.visibility = View.GONE
                 }
+
                 is UiState.LoadMore -> {
                     TODO()
                 }
-            }})
+            }
+        })
         searchViewModel.noFindMovie.observe(viewLifecycleOwner, Observer { noFindMovie ->
             binding.noFindMovie.visibility = if (noFindMovie) View.VISIBLE else View.GONE
         })

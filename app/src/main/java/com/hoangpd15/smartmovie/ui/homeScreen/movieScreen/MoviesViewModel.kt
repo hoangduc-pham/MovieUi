@@ -24,7 +24,8 @@ class MoviesViewModel @Inject constructor(
     private val topRatedUseCase: GetTopRateMoviesUseCase,
     private val popularUseCase: GetPopularMoviesUseCase,
     private val nowPlayingUseCase: GetNowPlayingMoviesUseCase,
-    private val upComingUseCase: GetUpComingMoviesUseCase) : ViewModel() {
+    private val upComingUseCase: GetUpComingMoviesUseCase
+) : ViewModel() {
 
     private val _textPopular = MutableLiveData<Boolean>()
     val textPopular: LiveData<Boolean> get() = _textPopular

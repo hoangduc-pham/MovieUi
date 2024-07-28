@@ -113,8 +113,8 @@ class TypeFragment(type: String) : Fragment() {
             adapter.updateData(imageUrlList, idList, nameMovieList, voteCountList, overView)
         } else {
             adapter = ImageAdapter(
-                {id -> typeViewModel.deleteFavoriteMovie(id)},
-                {movie -> typeViewModel.insertFavoriteMovie(movie)},
+                { id -> typeViewModel.deleteFavoriteMovie(id) },
+                { movie -> typeViewModel.insertFavoriteMovie(movie) },
                 imageUrlList,
                 idList,
                 nameMovieList,
@@ -137,8 +137,8 @@ class TypeFragment(type: String) : Fragment() {
         val overView = movieList.map { it.overview }
         val voteCountList = movieList.map { it.voteCount.toString() }
         adapter = ImageAdapter(
-            {id -> typeViewModel.deleteFavoriteMovie(id)},
-            {movie -> typeViewModel.insertFavoriteMovie(movie)},
+            { id -> typeViewModel.deleteFavoriteMovie(id) },
+            { movie -> typeViewModel.insertFavoriteMovie(movie) },
             imageUrlList,
             idList,
             nameMovieList,

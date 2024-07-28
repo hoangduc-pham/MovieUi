@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -24,7 +23,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -110,21 +108,3 @@ fun MovieDetailScreen(
         }
     }
 }
-//@Preview(showBackground = true)
-//@Composable
-//fun DetailScreenPreview() {
-//    Movie_AssTheme {
-//        Surface(
-//            modifier = Modifier.fillMaxSize(),
-//            color = MaterialTheme.colorScheme.background
-//        ) {
-//            Scaffold(
-//            ) { paddingValues ->
-//                MovieDetailScreen(
-//                    modifier = Modifier.padding(paddingValues),
-//                    movieDetailViewModel = MovieDetailViewModel()
-//                )
-//            }
-//        }
-//    }
-//}
