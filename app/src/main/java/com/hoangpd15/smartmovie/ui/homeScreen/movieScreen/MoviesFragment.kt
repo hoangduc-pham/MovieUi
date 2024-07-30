@@ -182,7 +182,6 @@ class MoviesFragment(private val moveToTab: (Int) -> Unit) : Fragment() {
         isSwitch = isChecked
         if (isAdded) {
             moviesViewModel.refreshMovies()
-            observeViewModel()
             initRecyclerViewLayoutManagers()
         }
     }

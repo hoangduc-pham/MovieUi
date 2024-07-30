@@ -14,6 +14,8 @@ import com.example.domain.IsFavoriteMovieUseCase
 import com.example.domain.entities.FavoriteMovieEntity
 import com.hoangpd15.smartmovie.ui.UiStateAllMovie
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -51,16 +53,19 @@ class MoviesViewModel @Inject constructor(
     private val _uiStateUpComing = MutableLiveData<UiStateAllMovie>()
     val uiStateUpComing: LiveData<UiStateAllMovie> get() = _uiStateUpComing
 
-
-    fun refreshMovies() {
-        fetchPopularMovies()
-        fetchTopRatedMovies()
-        fetchNowPlayingMovies()
-        fetchUpComingMovies()
-    }
-
     init {
         refreshMovies()
+    }
+
+    fun refreshMovies() {
+        viewModelScope.launch {
+            val popularDeferred = async { fetchPopularMovies() }
+            val topRatedDeferred = async { fetchTopRatedMovies() }
+            val nowPlayingDeferred = async { fetchNowPlayingMovies() }
+            val upComingDeferred = async { fetchUpComingMovies() }
+
+            awaitAll(popularDeferred, topRatedDeferred, nowPlayingDeferred, upComingDeferred)
+        }
     }
 
     private fun fetchPopularMovies() {

@@ -1,5 +1,6 @@
 package com.hoangpd15.smartmovie.base
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -27,9 +28,11 @@ open class BaseViewModel @Inject constructor(
     private var currentMovies: List<Movie> = emptyList()
 
     init {
-        fetchMovies(1)
+//        fetchMovies(1)
+
     }
     fun fetchMovies(page: Int) {
+//        Log.d("hoangpd", "onViewCreated: create ie")
         viewModelScope.launch {
             _uiState.value = UiState.Loading
             loadMoviesFromApi(page)

@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -20,6 +21,7 @@ import com.hoangpd15.smartmovie.databinding.FragmentUpComingBinding
 import com.hoangpd15.smartmovie.ui.UiState
 import com.hoangpd15.smartmovie.ui.homeScreen.HomeFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
+import kotlin.properties.Delegates
 
 @AndroidEntryPoint
 class TypeFragment(type: String) : Fragment() {
@@ -30,6 +32,7 @@ class TypeFragment(type: String) : Fragment() {
     private var typeMovie: String = type
     private var isSwitch: Boolean = false
     private var isDialogShowing: Boolean = false
+    private var isLoadingMore = false
 
     private val popularViewModel: PopularViewModel by viewModels()
     private val topRatedViewModel: TopRatedViewModel by viewModels()
@@ -66,18 +69,19 @@ class TypeFragment(type: String) : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         typeViewModel.fetchMovies(1)
+//        Log.d("hoangpd", "onViewCreated: create ie")
         initRecyclerView()
         observeViewModel()
         setupSwipeRefresh()
     }
 
     private fun initRecyclerView() {
-        binding.recyclerUpComing.layoutManager = if (isSwitch) {
+        binding.recyclerTypeMovie.layoutManager = if (isSwitch) {
             GridLayoutManager(requireContext(), 2, GridLayoutManager.VERTICAL, false)
         } else {
             LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
         }
-        binding.recyclerUpComing.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        binding.recyclerTypeMovie.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (!recyclerView.canScrollVertically(1) && typeViewModel.uiState.value !is UiState.LoadMore) {
@@ -97,13 +101,21 @@ class TypeFragment(type: String) : Fragment() {
 
                 is UiState.LoadMore -> {
                     binding.progressBar.visibility = View.VISIBLE
+                    isLoadingMore = true
                 }
 
                 is UiState.Success<*> -> {
                     binding.icLoading.visibility = View.GONE
                     binding.progressBar.visibility = View.GONE
                     val movies = uiState.list as? List<Movie> ?: emptyList()
-                    setupAdapter(movies)
+                    if (isLoadingMore) {
+                        // Nếu đang load thêm dữ liệu, khởi tạo lại adapter
+                        setupAdapter(movies)
+                        isLoadingMore = false
+                    } else {
+                        // Nếu không phải load thêm, chỉ cập nhật dữ liệu của adapter
+                        setupAdapter(movies)
+                    }
                 }
 
                 is UiState.Error -> {
@@ -124,25 +136,25 @@ class TypeFragment(type: String) : Fragment() {
         val nameMovieList = movieList.map { it.title }
         val overView = movieList.map { it.overview }
         val voteCountList = movieList.map { it.voteCount.toString() }
-        if (::adapter.isInitialized) {
-            adapter.updateData(imageUrlList, idList, nameMovieList, voteCountList, overView)
-        } else {
-            adapter = ImageAdapter(
-                { id -> typeViewModel.deleteFavoriteMovie(id) },
-                { movie -> typeViewModel.insertFavoriteMovie(movie) },
-                imageUrlList,
-                idList,
-                nameMovieList,
-                voteCountList,
-                overView,
-                isSwitch,
-                requireContext()
-            ) { id ->
-                val action = HomeFragmentDirections.actionHomeFragmentToDetailFragment(id)
-                findNavController().navigate(action)
+            if (isLoadingMore) {
+                adapter.updateData(imageUrlList, idList, nameMovieList, voteCountList, overView)
+            } else {
+                adapter = ImageAdapter(
+                    { id -> typeViewModel.deleteFavoriteMovie(id) },
+                    { movie -> typeViewModel.insertFavoriteMovie(movie) },
+                    imageUrlList,
+                    idList,
+                    nameMovieList,
+                    voteCountList,
+                    overView,
+                    isSwitch,
+                    requireContext()
+                ) { id ->
+                    val action = HomeFragmentDirections.actionHomeFragmentToDetailFragment(id)
+                    findNavController().navigate(action)
+                }
+                binding.recyclerTypeMovie.adapter = adapter
             }
-            binding.recyclerUpComing.adapter = adapter
-        }
     }
 
     private fun setupAdapterSwitch(movieList: List<Movie>) {
@@ -165,11 +177,11 @@ class TypeFragment(type: String) : Fragment() {
             val action = HomeFragmentDirections.actionHomeFragmentToDetailFragment(id)
             findNavController().navigate(action)
         }
-        binding.recyclerUpComing.adapter = adapter
+        binding.recyclerTypeMovie.adapter = adapter
     }
 
     private fun updateRecyclerViewLayoutManagers() {
-        binding.recyclerUpComing.layoutManager = if (isSwitch) {
+        binding.recyclerTypeMovie.layoutManager = if (isSwitch) {
             GridLayoutManager(requireContext(), 2, GridLayoutManager.VERTICAL, false)
         } else {
             LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
@@ -179,16 +191,15 @@ class TypeFragment(type: String) : Fragment() {
     fun setSwitch(isChecked: Boolean) {
         isSwitch = isChecked
         if (isAdded) {
-            setupAdapterSwitch(listMovie)
-            observeViewModel()
             updateRecyclerViewLayoutManagers()
+            typeViewModel.fetchMovies(1)
         }
     }
 
     private fun setupSwipeRefresh() {
         binding.swipeRefreshLayout.setOnRefreshListener {
-            setupAdapterSwitch(listMovie)
-            observeViewModel()
+            setupAdapter(listMovie)
+            typeViewModel.fetchMovies(1)
             Handler(Looper.getMainLooper()).postDelayed({
                 binding.swipeRefreshLayout.isRefreshing = false
             }, 500)
