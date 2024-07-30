@@ -26,6 +26,9 @@ open class BaseViewModel @Inject constructor(
     private var currentPage = 1
     private var currentMovies: List<Movie> = emptyList()
 
+    init {
+        fetchMovies(1)
+    }
     fun fetchMovies(page: Int) {
         viewModelScope.launch {
             _uiState.value = UiState.Loading

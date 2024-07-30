@@ -1,5 +1,6 @@
 package com.hoangpd15.smartmovie.ui.homeScreen.typeMovieScreen
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -28,6 +29,7 @@ class TypeFragment(type: String) : Fragment() {
     private var listMovie: List<Movie> = emptyList()
     private var typeMovie: String = type
     private var isSwitch: Boolean = false
+    private var isDialogShowing: Boolean = false
 
     private val popularViewModel: PopularViewModel by viewModels()
     private val topRatedViewModel: TopRatedViewModel by viewModels()
@@ -42,6 +44,15 @@ class TypeFragment(type: String) : Fragment() {
             "upComing" -> upComingViewModel
             else -> popularViewModel
         }
+    }
+    private val dialog by lazy {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Load data failed")
+            .setMessage("Can't get data from server, please try again later.")
+            .setPositiveButton("Reload") { _, _ ->
+                typeViewModel.fetchMovies(1)
+                isDialogShowing = false
+            }
     }
 
     override fun onCreateView(
@@ -98,6 +109,10 @@ class TypeFragment(type: String) : Fragment() {
                 is UiState.Error -> {
                     binding.icLoading.visibility = View.GONE
                     binding.progressBar.visibility = View.GONE
+                    if (!isDialogShowing) {
+                        dialog.show()
+                        isDialogShowing = true
+                    }
                 }
             }
         })

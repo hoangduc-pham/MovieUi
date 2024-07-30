@@ -55,8 +55,8 @@ class MoviesViewModel @Inject constructor(
     fun refreshMovies() {
         fetchPopularMovies()
         fetchTopRatedMovies()
-        fetchUpComingMovies()
         fetchNowPlayingMovies()
+        fetchUpComingMovies()
     }
 
     init {
