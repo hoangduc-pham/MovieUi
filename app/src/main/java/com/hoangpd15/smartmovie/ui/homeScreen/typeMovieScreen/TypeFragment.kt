@@ -68,8 +68,7 @@ class TypeFragment(type: String) : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        typeViewModel.fetchMovies(1)
-//        Log.d("hoangpd", "onViewCreated: create ie")
+        typeViewModel.fetchMovies(1) //1
         initRecyclerView()
         observeViewModel()
         setupSwipeRefresh()
@@ -109,11 +108,9 @@ class TypeFragment(type: String) : Fragment() {
                     binding.progressBar.visibility = View.GONE
                     val movies = uiState.list as? List<Movie> ?: emptyList()
                     if (isLoadingMore) {
-                        // Nếu đang load thêm dữ liệu, khởi tạo lại adapter
                         setupAdapter(movies)
                         isLoadingMore = false
                     } else {
-                        // Nếu không phải load thêm, chỉ cập nhật dữ liệu của adapter
                         setupAdapter(movies)
                     }
                 }
@@ -155,29 +152,6 @@ class TypeFragment(type: String) : Fragment() {
                 }
                 binding.recyclerTypeMovie.adapter = adapter
             }
-    }
-
-    private fun setupAdapterSwitch(movieList: List<Movie>) {
-        val imageUrlList = movieList.map { it.posterPath }
-        val idList = movieList.map { it.id }
-        val nameMovieList = movieList.map { it.title }
-        val overView = movieList.map { it.overview }
-        val voteCountList = movieList.map { it.voteCount.toString() }
-        adapter = ImageAdapter(
-            { id -> typeViewModel.deleteFavoriteMovie(id) },
-            { movie -> typeViewModel.insertFavoriteMovie(movie) },
-            imageUrlList,
-            idList,
-            nameMovieList,
-            voteCountList,
-            overView,
-            isSwitch,
-            requireContext()
-        ) { id ->
-            val action = HomeFragmentDirections.actionHomeFragmentToDetailFragment(id)
-            findNavController().navigate(action)
-        }
-        binding.recyclerTypeMovie.adapter = adapter
     }
 
     private fun updateRecyclerViewLayoutManagers() {

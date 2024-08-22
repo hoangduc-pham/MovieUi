@@ -162,15 +162,15 @@ class MoviesFragment(private val moveToTab: (Int) -> Unit) : Fragment() {
         val voteCountList = limitedMovies.map { it.voteCount.toString() }
 
         adapter = ImageAdapter(
-            { id -> moviesViewModel.deleteFavoriteMovie(id) },
-            { movie -> moviesViewModel.insertFavoriteMovie(movie) },
-            imageUrlList,
-            idList,
-            nameMovieList,
-            voteCountList,
-            overView,
-            isSwitch,
-            requireContext()
+            deleteFavoriteMovie = { id -> moviesViewModel.deleteFavoriteMovie(id) },
+            insertFavoriteMovie = { movie -> moviesViewModel.insertFavoriteMovie(movie) },
+            imageUrlList = imageUrlList,
+            listId = idList,
+            nameMovie = nameMovieList,
+            voteCount = voteCountList,
+            overView = overView,
+            isGridView = isSwitch,
+            context = requireContext()
         ) { id ->
             val action = HomeFragmentDirections.actionHomeFragmentToDetailFragment(id)
             findNavController().navigate(action)

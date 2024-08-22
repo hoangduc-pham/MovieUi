@@ -13,12 +13,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NowPlayingViewModel @Inject constructor(
-    private val nowPlayingUseCase: GetNowPlayingMoviesUseCase,
+    private val nowPlayingUseCase: GetNowPlayingMoviesUseCase, //3
     private val deleteFavoriteMovieUseCase: DeleteFavoriteMovieUseCase,
     private val insertFavoriteMovieUseCase: InsertFavoriteMovieUseCase,
 ) : BaseViewModel(deleteFavoriteMovieUseCase, insertFavoriteMovieUseCase) {
     override suspend fun fetchMoviesFromApi(page: Int): List<Movie> {
-        return nowPlayingUseCase(page).results
+        return nowPlayingUseCase(page).results //2
     }
 }
 
