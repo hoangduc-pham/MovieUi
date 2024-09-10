@@ -23,9 +23,17 @@ class SignInActivity : AppCompatActivity() {
         binding = ActivitySignInBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        clickPhoneButton()
         firebaseAuth = FirebaseAuth.getInstance()
         clickSignUp()
         clickSignIn()
+    }
+
+    private fun clickPhoneButton() {
+        binding.phone.setOnClickListener {
+            val intent = Intent(this@SignInActivity, PhoneActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun clickSignUp() {

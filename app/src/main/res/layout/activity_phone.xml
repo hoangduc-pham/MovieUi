@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/login_background"
+    android:padding="30dp"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.PhoneActivity">
+    <ImageView
+        android:layout_marginTop="75dp"
+        android:layout_gravity="center"
+        android:src="@drawable/logo_hand"
+        android:layout_width="300dp"
+        android:layout_height="300dp">
+    </ImageView>
+    <TextView
+        android:layout_marginTop="55dp"
+        android:textSize="24sp"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:text="Login with\nMobile Phone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+    </TextView>
+    <LinearLayout
+        android:layout_marginTop="35dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    <Button
+        android:text="+84"
+        android:background="@drawable/phone"
+        android:textSize="15sp"
+        android:textColor="@color/black"
+        android:layout_width="50dp"
+        android:layout_height="50dp">
+    </Button>
+        <EditText
+            android:phoneNumber="true"
+            android:id="@+id/numberPhoneText"
+            android:hint="Type your number"
+            android:layout_marginLeft="15dp"
+            android:background="@drawable/phone"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </EditText>
+    </LinearLayout>
+    <Button
+        android:id="@+id/send"
+        android:layout_marginTop="55dp"
+        android:layout_gravity="center"
+        android:text="SEND OTP"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+    </Button>
+</LinearLayout>
