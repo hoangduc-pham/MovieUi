@@ -30,6 +30,10 @@ class PhoneActivity : AppCompatActivity() {
         binding = ActivityPhoneBinding.inflate(layoutInflater)
         setContentView(binding.root)
         init()
+        clickSendButton()
+    }
+
+    private fun clickSendButton() {
         binding.send.setOnClickListener {
             numberText = binding.numberPhoneText.text.toString()
             if (numberText.isNotEmpty()) {
@@ -48,8 +52,6 @@ class PhoneActivity : AppCompatActivity() {
             } else {
                 Toast.makeText(this, "Please enter your number", Toast.LENGTH_SHORT).show()
             }
-//            val intent = Intent(this, OtpActivity::class.java)
-//            startActivity(intent)
         }
     }
 
@@ -78,7 +80,7 @@ class PhoneActivity : AppCompatActivity() {
     }
 
     private fun setToMain() {
-        startActivity(Intent(this, PhoneActivity::class.java))
+        startActivity(Intent(this, OtpActivity::class.java))
     }
 
     private val callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {

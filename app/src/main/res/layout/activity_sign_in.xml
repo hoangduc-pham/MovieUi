@@ -138,6 +138,7 @@
         </com.google.android.material.divider.MaterialDivider>
     </LinearLayout>
     <LinearLayout
+        android:id="@+id/google"
         android:gravity="center"
         android:background="@drawable/background_google"
         android:orientation="horizontal"

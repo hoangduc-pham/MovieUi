@@ -61,7 +61,7 @@ class OtpActivity : AppCompatActivity() {
             if (typeOtp.isNotEmpty()) {
                 if (typeOtp.length == 6) {
                     val authCredential = PhoneAuthProvider.getCredential(
-                        OTP,typeOtp
+                        OTP, typeOtp
                     )
                     signInWithPhoneAuthCredential(authCredential)
                 } else {
@@ -75,21 +75,23 @@ class OtpActivity : AppCompatActivity() {
             resendVerificationCode()
         }
     }
-    private fun resendVerificationCode(){
+
+    private fun resendVerificationCode() {
         val options = PhoneAuthOptions.newBuilder(auth)
             .setPhoneNumber(phoneNumber)
-            .setTimeout(60L,TimeUnit.SECONDS)
+            .setTimeout(60L, TimeUnit.SECONDS)
             .setActivity(this)
             .setCallbacks(callbacks)
             .build()
         PhoneAuthProvider.verifyPhoneNumber(options)
     }
+
     private fun signInWithPhoneAuthCredential(credential: PhoneAuthCredential) {
         auth.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
-                    Toast.makeText(this,"Authenticate Successfully", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Authenticate Successfully", Toast.LENGTH_SHORT).show()
                     setToMain()
                 } else {
                     // Sign in failed, display a message and update the UI
@@ -101,9 +103,11 @@ class OtpActivity : AppCompatActivity() {
                 }
             }
     }
+
     private fun setToMain() {
         startActivity(Intent(this, PhoneActivity::class.java))
     }
+
     private fun addTextChangeListener() {
         otp1.addTextChangedListener(EditTextWatcher(otp1))
         otp2.addTextChangedListener(EditTextWatcher(otp2))
@@ -112,6 +116,7 @@ class OtpActivity : AppCompatActivity() {
         otp5.addTextChangedListener(EditTextWatcher(otp5))
         otp6.addTextChangedListener(EditTextWatcher(otp6))
     }
+
     private val callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
 
         override fun onVerificationCompleted(credential: PhoneAuthCredential) {
@@ -155,6 +160,7 @@ class OtpActivity : AppCompatActivity() {
             resendToken = token
         }
     }
+
     private fun init() {
         auth = FirebaseAuth.getInstance()
         verifyBtn = binding.verify
